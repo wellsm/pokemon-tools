@@ -1,6 +1,6 @@
 // src/components/app/energy-indicator.tsx
 import { useGameStore } from '@/game-store'
-import { ENERGY_EMOJI, ENERGY_LABEL, ENERGY_COLOR, type EnergyType } from '@/game-data'
+import { ENERGY_EMOJI, ENERGY_LABEL, ENERGY_COLOR } from '@/game-data'
 
 interface EnergyIndicatorProps {
   side: 'my' | 'opponent'

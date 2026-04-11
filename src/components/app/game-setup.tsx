@@ -1,7 +1,7 @@
 // src/components/app/game-setup.tsx
 import { useGameStore } from '@/game-store'
 import {
-  ENERGY_TYPES, ENERGY_LABEL, ENERGY_EMOJI, ENERGY_COLOR,
+  ENERGY_TYPES, ENERGY_LABEL, ENERGY_EMOJI,
   FORMAT_DEFAULTS, MAX_ENERGY_TYPES,
   type EnergyType, type GameFormat,
 } from '@/game-data'

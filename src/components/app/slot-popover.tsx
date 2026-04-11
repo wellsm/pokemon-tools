@@ -2,7 +2,7 @@
 import { useGameStore } from '@/game-store'
 import {
   ENERGY_TYPES, ENERGY_EMOJI, ENERGY_LABEL, ENERGY_COLOR,
-  type BoardSlot, type EnergyType,
+  type BoardSlot,
 } from '@/game-data'
 import {
   Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerDescription,
