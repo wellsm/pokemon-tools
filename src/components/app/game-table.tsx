@@ -11,6 +11,7 @@ export function GameTable() {
   const [coinOpen, setCoinOpen] = useState(false);
   const [coinSide, setCoinSide] = useState<Side>("b");
   const [showEndConfirm, setShowEndConfirm] = useState(false);
+  const [endSide, setEndSide] = useState<Side>("b");
 
   function openCoin(side: Side) {
     setCoinSide(side);
@@ -27,7 +28,7 @@ export function GameTable() {
               field={fieldA}
               side="a"
               onCoinFlip={modules.coins ? () => openCoin("a") : undefined}
-              onEndGame={() => setShowEndConfirm(true)}
+              onEndGame={() => { setEndSide("a"); setShowEndConfirm(true); }}
             />
           </div>
         )}
@@ -36,7 +37,7 @@ export function GameTable() {
             field={fieldB}
             side="b"
             onCoinFlip={modules.coins ? () => openCoin("b") : undefined}
-            onEndGame={() => setShowEndConfirm(true)}
+            onEndGame={() => { setEndSide("b"); setShowEndConfirm(true); }}
           />
         )}
 
@@ -57,7 +58,7 @@ export function GameTable() {
 
       {showEndConfirm && createPortal(
         <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4">
-          <div className="bg-gray-900 border border-gray-700 rounded-2xl p-6 max-w-xs w-full text-center space-y-4">
+          <div className={`bg-gray-900 border border-gray-700 rounded-2xl p-6 max-w-xs w-full text-center space-y-4 ${endSide === 'a' ? 'rotate-180' : ''}`}>
             <p className="font-bold text-white text-lg">Encerrar partida?</p>
             <p className="text-sm text-gray-400">
               Todo o progresso será perdido.
