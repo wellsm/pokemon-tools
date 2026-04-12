@@ -4,7 +4,6 @@ import { BoardSlot } from "@/components/app/board-slot";
 import { SlotPopover } from "@/components/app/slot-popover";
 import type { FieldSide as FieldSideType } from "@/game-data";
 import { type Side, useGameStore } from "@/game-store";
-import { cn } from "@/lib/utils";
 
 interface FieldSideProps {
   field: FieldSideType;
@@ -97,7 +96,6 @@ export function FieldSide({ field, side, onCoinFlip }: FieldSideProps) {
   const benchSlots = field.slots.filter((s) => s.position === "bench");
   const selectedSlot = field.slots.find((s) => s.id === selectedSlotId);
 
-  const isTop = side === "a";
   const lastBench = benchSlots[benchSlots.length - 1];
 
   function renderSlot(slot: (typeof field.slots)[number], slotLabel: string) {
@@ -139,10 +137,7 @@ export function FieldSide({ field, side, onCoinFlip }: FieldSideProps) {
 
   return (
     <div
-      className={cn(
-        "flex flex-col items-center gap-1 flex-1",
-        isTop ? "justify-end" : "justify-start",
-      )}
+      className="flex flex-col items-center gap-1 flex-1 justify-start"
       onTouchMove={handleTouchMove}
     >
       <div className="flex items-center justify-between w-full px-2 absolute">
@@ -166,35 +161,19 @@ export function FieldSide({ field, side, onCoinFlip }: FieldSideProps) {
         </div>
       </div>
 
-      {isTop ? (
-        <div className="flex flex-col gap-4 items-center">
-          <div className="grid grid-cols-5 flex-wrap items-center justify-center gap-2">
-            {benchSlots.map((slot, i) => renderSlot(slot, `B${i + 1}`))}
-          </div>
-          <div className="relative">
-            {activeSlot && renderSlot(activeSlot, "Ativo")}
-            {coinButton && (
-              <div className="absolute top-1/2 -translate-y-1/2 -left-12">
-                {coinButton}
-              </div>
-            )}
-          </div>
+      <div className="flex flex-col gap-4 items-center">
+        <div className="relative">
+          {activeSlot && renderSlot(activeSlot, "Ativo")}
+          {coinButton && (
+            <div className="absolute top-1/2 -translate-y-1/2 -right-12">
+              {coinButton}
+            </div>
+          )}
         </div>
-      ) : (
-        <div className="flex flex-col gap-4 items-center">
-          <div className="relative">
-            {activeSlot && renderSlot(activeSlot, "Ativo")}
-            {coinButton && (
-              <div className="absolute top-1/2 -translate-y-1/2 -right-12">
-                {coinButton}
-              </div>
-            )}
-          </div>
-          <div className="grid grid-cols-5 gap-2 flex-wrap justify-center">
-            {benchSlots.map((slot, i) => renderSlot(slot, `B${i + 1}`))}
-          </div>
+        <div className="grid grid-cols-5 gap-2 flex-wrap justify-center">
+          {benchSlots.map((slot, i) => renderSlot(slot, `B${i + 1}`))}
         </div>
-      )}
+      </div>
 
       {selectedSlot && (
         <SlotPopover
