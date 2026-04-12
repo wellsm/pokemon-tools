@@ -180,7 +180,7 @@ export function FieldSide({ field, side, onCoinFlip, onEndGame }: FieldSideProps
             <button
               type="button"
               onClick={() => addSlot(side)}
-              className="text-green-400 bg-green-400/10 rounded-md px-2 sm:px-4 py-1 sm:py-2 text-sm hover:bg-green-400/20 transition-colors"
+              className="text-green-400 bg-green-400/10 rounded-md px-2 sm:px-4 py-1 sm:py-2 text-sm sm:text-base hover:bg-green-400/20 transition-colors"
             >
               <PlusIcon className="size-3.5 inline" /> Slot
             </button>

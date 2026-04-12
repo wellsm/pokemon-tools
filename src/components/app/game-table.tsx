@@ -19,9 +19,9 @@ export function GameTable() {
   }
 
   return (
-    <div className="fixed inset-0 bg-gray-950 flex flex-col z-30">
+    <div className="flex-1 bg-gray-950 flex flex-col">
       {/* Field area */}
-      <div className="flex-1 flex flex-col justify-center items-center gap-4 relative overflow-hidden px-2 h-screen">
+      <div className="flex-1 flex flex-col justify-center items-center gap-4 relative overflow-hidden px-2">
         {modules.board && (
           <div className="rotate-180 flex-1 flex items-start justify-center">
             <FieldSide
