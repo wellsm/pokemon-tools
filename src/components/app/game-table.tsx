@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { createPortal } from "react-dom";
 import { CoinModal } from "@/components/app/coin-modal";
 import { EnergyIndicator } from "@/components/app/energy-indicator";
 import { FieldSide } from "@/components/app/field-side";
@@ -26,6 +27,7 @@ export function GameTable() {
               field={fieldA}
               side="a"
               onCoinFlip={modules.coins ? () => openCoin("a") : undefined}
+              onEndGame={() => setShowEndConfirm(true)}
             />
           </div>
         )}
@@ -34,6 +36,7 @@ export function GameTable() {
             field={fieldB}
             side="b"
             onCoinFlip={modules.coins ? () => openCoin("b") : undefined}
+            onEndGame={() => setShowEndConfirm(true)}
           />
         )}
 
@@ -52,18 +55,18 @@ export function GameTable() {
 
       <CoinModal open={coinOpen} side={coinSide} onOpenChange={setCoinOpen} />
 
-      {showEndConfirm && (
+      {showEndConfirm && createPortal(
         <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl p-6 max-w-xs w-full text-center space-y-4">
-            <p className="font-bold text-gray-900">Encerrar partida?</p>
-            <p className="text-sm text-gray-500">
+          <div className="bg-gray-900 border border-gray-700 rounded-2xl p-6 max-w-xs w-full text-center space-y-4">
+            <p className="font-bold text-white text-lg">Encerrar partida?</p>
+            <p className="text-sm text-gray-400">
               Todo o progresso será perdido.
             </p>
             <div className="flex gap-2">
               <button
                 type="button"
                 onClick={() => setShowEndConfirm(false)}
-                className="flex-1 py-2.5 rounded-xl bg-gray-100 text-sm font-medium text-gray-700 hover:bg-gray-200 transition-colors"
+                className="flex-1 py-2.5 rounded-xl bg-gray-800 border border-gray-700 text-sm font-medium text-gray-300 hover:bg-gray-700 transition-colors"
               >
                 Cancelar
               </button>
@@ -76,7 +79,8 @@ export function GameTable() {
               </button>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );

@@ -8,6 +8,14 @@ import { FORMAT_DEFAULTS } from '@/game-data'
 
 export type Side = 'a' | 'b'
 
+export interface GameAction {
+  id: string
+  side: Side
+  type: 'move' | 'damage' | 'energy' | 'slot' | 'turn' | 'coin'
+  description: string
+  timestamp: number
+}
+
 interface GameState {
   format: GameFormat
   modules: GameModules
@@ -18,7 +26,9 @@ interface GameState {
   fieldB: FieldSide
   energyA: EnergyType | null
   energyB: EnergyType | null
+  history: GameAction[]
 
+  logAction: (side: Side, type: GameAction['type'], description: string) => void
   setFormat: (format: GameFormat) => void
   setModules: (modules: GameModules) => void
   setEnergyPool: (pool: EnergyType[]) => void
@@ -79,6 +89,18 @@ export const useGameStore = create<GameState>()(
       fieldB: { slots: [] },
       energyA: null,
       energyB: null,
+      history: [],
+
+      logAction: (side, type, description) =>
+        set((s) => ({
+          history: [...s.history, {
+            id: nanoid(),
+            side,
+            type,
+            description,
+            timestamp: Date.now(),
+          }],
+        })),
 
       setFormat: (format) => {
         const defaults = FORMAT_DEFAULTS[format]
@@ -99,6 +121,7 @@ export const useGameStore = create<GameState>()(
           fieldB: { slots: createSlots(benchSize) },
           energyA: null,
           energyB: null,
+          history: [],
         })
       },
 
@@ -110,6 +133,7 @@ export const useGameStore = create<GameState>()(
           fieldB: { slots: [] },
           energyA: null,
           energyB: null,
+          history: [],
         }),
 
       nextTurn: () =>
@@ -212,7 +236,11 @@ export const useGameStore = create<GameState>()(
           newSlots[fromIdx] = { ...newSlots[fromIdx], position: toPos }
           newSlots[toIdx] = { ...newSlots[toIdx], position: fromPos }
           ;[newSlots[fromIdx], newSlots[toIdx]] = [newSlots[toIdx], newSlots[fromIdx]]
-          return { [fieldKey(side)]: { slots: newSlots } }
+          const desc = `${fromPos} ↔ ${toPos}`
+          return {
+            [fieldKey(side)]: { slots: newSlots },
+            history: [...s.history, { id: nanoid(), side, type: 'move' as const, description: desc, timestamp: Date.now() }],
+          }
         }),
     }),
     { name: 'pokedex-tcg-game' }

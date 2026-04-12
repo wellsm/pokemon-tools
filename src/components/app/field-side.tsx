@@ -2,21 +2,25 @@ import { MinusIcon, PlusIcon } from "lucide-react";
 import { useCallback, useRef, useState } from "react";
 import { BoardSlot } from "@/components/app/board-slot";
 import { SlotPopover } from "@/components/app/slot-popover";
-import type { FieldSide as FieldSideType } from "@/game-data";
+import type { FieldSide as FieldSideType, BoardSlot as BoardSlotType } from "@/game-data";
+import { ENERGY_LABEL } from "@/game-data";
 import { type Side, useGameStore } from "@/game-store";
 
 interface FieldSideProps {
   field: FieldSideType;
   side: Side;
   onCoinFlip?: () => void;
+  onEndGame?: () => void;
 }
 
-export function FieldSide({ field, side, onCoinFlip }: FieldSideProps) {
+export function FieldSide({ field, side, onCoinFlip, onEndGame }: FieldSideProps) {
   const addSlot = useGameStore((s) => s.addSlot);
   const removeSlot = useGameStore((s) => s.removeSlot);
   const swapSlots = useGameStore((s) => s.swapSlots);
+  const logAction = useGameStore((s) => s.logAction);
 
   const [selectedSlotId, setSelectedSlotId] = useState<string | null>(null);
+  const slotSnapshot = useRef<BoardSlotType | null>(null);
   const [dragFromId, setDragFromId] = useState<string | null>(null);
   const [dragOverId, setDragOverId] = useState<string | null>(null);
 
@@ -105,7 +109,10 @@ export function FieldSide({ field, side, onCoinFlip }: FieldSideProps) {
         label={slotLabel}
         variant={side}
         onClick={() => {
-          if (!isDraggingTouch.current) setSelectedSlotId(slot.id);
+          if (!isDraggingTouch.current) {
+            slotSnapshot.current = { ...slot, energies: [...slot.energies] };
+            setSelectedSlotId(slot.id);
+          }
         }}
         isDragging={dragFromId === slot.id}
         isDragOver={dragOverId === slot.id}
@@ -136,18 +143,33 @@ export function FieldSide({ field, side, onCoinFlip }: FieldSideProps) {
     </button>
   );
 
+  const endButton = onEndGame && (
+    <button
+      type="button"
+      onClick={onEndGame}
+      className="w-10 h-10 rounded-full bg-red-500/20 border border-red-500/40 flex items-center justify-center text-red-400 text-xs font-bold hover:bg-red-500/30 active:scale-95 transition-all"
+    >
+      ✕
+    </button>
+  );
+
   return (
     <div
       className="flex flex-col items-center gap-1 flex-1 justify-start"
       onTouchMove={handleTouchMove}
     >
       <div className="flex flex-col gap-4 items-center">
-        {/* Active + coin button */}
+        {/* Active + coin button + end button */}
         <div className="relative">
           {activeSlot && renderSlot(activeSlot, "Ativo")}
           {coinButton && (
             <div className="absolute top-1/2 -translate-y-1/2 -right-12">
               {coinButton}
+            </div>
+          )}
+          {endButton && (
+            <div className="absolute top-1/2 -translate-y-1/2 -left-12">
+              {endButton}
             </div>
           )}
         </div>
@@ -185,7 +207,24 @@ export function FieldSide({ field, side, onCoinFlip }: FieldSideProps) {
           label={selectedSlot.position === "active" ? "Ativo" : "Banco"}
           open={!!selectedSlotId}
           onOpenChange={(open) => {
-            if (!open) setSelectedSlotId(null);
+            if (!open) {
+              // Log batched changes on close
+              const snap = slotSnapshot.current;
+              const current = field.slots.find((s) => s.id === selectedSlotId);
+              if (snap && current) {
+                const damageDiff = current.damage - snap.damage;
+                if (damageDiff !== 0) {
+                  logAction(side, 'damage', `${damageDiff > 0 ? '+' : ''}${damageDiff} dano → ${current.damage}`);
+                }
+                const addedEnergies = current.energies.length - snap.energies.length;
+                if (addedEnergies !== 0) {
+                  const energyNames = current.energies.map((e) => ENERGY_LABEL[e]).join(', ');
+                  logAction(side, 'energy', `${addedEnergies > 0 ? '+' : ''}${addedEnergies} energia (${energyNames || 'nenhuma'})`);
+                }
+              }
+              slotSnapshot.current = null;
+              setSelectedSlotId(null);
+            }
           }}
         />
       )}
