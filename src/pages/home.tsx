@@ -51,33 +51,33 @@ export function Home() {
 
   return (
     <div className="min-h-screen bg-background pb-16 md:pb-0">
-      <header className="bg-card border-b border-border px-4 py-4 shadow-sm">
+      <header className="bg-primary px-4 py-4 shadow-sm">
         <div className="max-w-2xl mx-auto flex items-center justify-between">
           <div>
-            <h1 className="font-black text-xl text-gray-900 leading-tight">Pokédex TCG</h1>
-            <p className="text-xs text-gray-400">{folders.length} fichário{folders.length !== 1 ? 's' : ''}</p>
+            <h1 className="font-black text-xl text-white leading-tight">Pokédex TCG</h1>
+            <p className="text-xs text-white/70">{folders.length} fichário{folders.length !== 1 ? 's' : ''}</p>
           </div>
           <div className="flex items-center gap-2">
             <div className="relative" ref={menuRef}>
               <button
                 onClick={() => setMenuOpen((v) => !v)}
-                className="flex items-center justify-center size-10 rounded-2xl text-gray-500 hover:bg-gray-100 transition-colors active:scale-95"
+                className="flex items-center justify-center size-10 rounded-2xl text-white/80 hover:bg-white/10 transition-colors active:scale-95"
                 aria-label="Menu"
               >
                 <EllipsisVerticalIcon className="size-5" />
               </button>
               {menuOpen && (
-                <div className="absolute right-0 top-full mt-1 w-48 bg-white rounded-xl shadow-lg border border-gray-100 py-1 z-50">
+                <div className="absolute right-0 top-full mt-1 w-48 bg-card rounded-xl shadow-lg border border-border py-1 z-50">
                   <button
                     onClick={() => { exportData(); setMenuOpen(false) }}
-                    className="flex items-center gap-2 w-full px-3 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                    className="flex items-center gap-2 w-full px-3 py-2.5 text-sm text-foreground hover:bg-muted transition-colors"
                   >
                     <DownloadIcon className="size-4" />
                     Exportar dados
                   </button>
                   <button
                     onClick={() => { fileRef.current?.click(); setMenuOpen(false) }}
-                    className="flex items-center gap-2 w-full px-3 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                    className="flex items-center gap-2 w-full px-3 py-2.5 text-sm text-foreground hover:bg-muted transition-colors"
                   >
                     <UploadIcon className="size-4" />
                     Importar dados
@@ -87,7 +87,7 @@ export function Home() {
             </div>
             <button
               onClick={() => setCreateOpen(true)}
-              className="flex items-center gap-1.5 bg-primary text-primary-foreground text-sm font-bold px-4 py-2.5 rounded-2xl hover:bg-primary/90 transition-colors active:scale-95"
+              className="flex items-center gap-1.5 bg-white text-primary text-sm font-bold px-4 py-2.5 rounded-2xl hover:bg-white/90 transition-colors active:scale-95"
             >
               <span className="text-base leading-none">+</span> Novo
             </button>

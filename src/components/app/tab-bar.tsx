@@ -1,15 +1,15 @@
-import { NavLink, Outlet } from 'react-router-dom'
-import { BookOpenIcon, GamepadIcon, SettingsIcon } from 'lucide-react'
-import { useIsMobile } from '@/hooks/use-mobile'
+import { BookOpenIcon, GamepadIcon, SettingsIcon } from "lucide-react";
+import { NavLink, Outlet } from "react-router-dom";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const tabs = [
-  { to: '/colecao', label: 'Coleção', icon: BookOpenIcon },
-  { to: '/jogar', label: 'Jogar', icon: GamepadIcon },
-  { to: '/config', label: 'Config', icon: SettingsIcon },
-]
+  { to: "/colecao", label: "Coleção", icon: BookOpenIcon },
+  { to: "/jogar", label: "Jogar", icon: GamepadIcon },
+  { to: "/config", label: "Config", icon: SettingsIcon },
+];
 
 export function TabBar() {
-  const isMobile = useIsMobile()
+  const isMobile = useIsMobile();
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
@@ -17,17 +17,18 @@ export function TabBar() {
       {!isMobile && (
         <nav className="bg-primary shadow-sm">
           <div className="max-w-4xl mx-auto flex items-center h-14 px-4">
-            <span className="font-black text-lg text-white mr-8">Pokédex TCG</span>
+            <span className="font-black text-lg text-white mr-8">
+              Pokédex TCG
+            </span>
             <div className="flex gap-1">
               {tabs.map((tab) => (
                 <NavLink
                   key={tab.to}
                   to={tab.to}
                   className={({ isActive }) =>
-                    `flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                      isActive
-                        ? 'bg-white/20 text-white'
-                        : 'text-white/70 hover:bg-white/10 hover:text-white'
+                    `flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${isActive
+                      ? "bg-white/20 text-white"
+                      : "text-white/70 hover:bg-white/10 hover:text-white"
                     }`
                   }
                 >
@@ -54,20 +55,14 @@ export function TabBar() {
                 key={tab.to}
                 to={tab.to}
                 className={({ isActive }) =>
-                  `flex-1 flex flex-col items-center py-2.5 text-xs transition-colors ${
-                    isActive
-                      ? 'text-white font-bold'
-                      : 'text-white/60'
+                  `flex-1 flex flex-col items-center py-2.5 text-xs transition-colors ${isActive ? "text-white font-bold" : "text-white/60"
                   }`
                 }
               >
-                {({ isActive }) => (
+                {() => (
                   <>
                     <div className="relative mb-0.5">
                       <tab.icon className="size-5" />
-                      {isActive && (
-                        <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-4 h-0.5 bg-white rounded-full" />
-                      )}
                     </div>
                     <span>{tab.label}</span>
                   </>
@@ -78,5 +73,5 @@ export function TabBar() {
         </nav>
       )}
     </div>
-  )
+  );
 }
