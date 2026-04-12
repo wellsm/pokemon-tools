@@ -4,6 +4,7 @@ import { useBinderStore } from '@/store'
 import { Home } from '@/pages/home'
 import { BinderView } from '@/pages/binder'
 import { Play } from '@/pages/play'
+import { Settings } from '@/pages/settings'
 import { TabBar } from '@/components/app/tab-bar'
 
 function BinderRoute() {
@@ -21,6 +22,7 @@ export default function App() {
           <Route path="/colecao" element={<Home />} />
           <Route path="/colecao/:id" element={<BinderRoute />} />
           <Route path="/jogar" element={<Play />} />
+          <Route path="/config" element={<Settings />} />
         </Route>
         <Route path="/" element={<Navigate to="/colecao" replace />} />
         <Route path="/binders/:id" element={<Navigate to="/colecao" replace />} />

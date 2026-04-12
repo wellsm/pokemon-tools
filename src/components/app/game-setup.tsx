@@ -44,7 +44,7 @@ export function GameSetup() {
               onClick={() => handleFormatChange(f)}
               className={`flex-1 p-3 rounded-xl text-center transition-colors border-2 ${
                 format === f
-                  ? 'border-gray-900 bg-gray-900 text-white'
+                  ? 'border-primary bg-primary text-primary-foreground'
                   : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300'
               }`}
             >
@@ -108,7 +108,7 @@ export function GameSetup() {
                   disabled={disabled}
                   className={`flex items-center gap-2 px-3 py-2 rounded-xl text-sm transition-all border-2 ${
                     selected
-                      ? 'border-gray-900 bg-gray-900 text-white'
+                      ? 'border-primary bg-primary text-primary-foreground'
                       : disabled
                         ? 'border-gray-100 bg-gray-50 text-gray-300 cursor-not-allowed'
                         : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300'
@@ -127,7 +127,7 @@ export function GameSetup() {
       <button
         onClick={startGame}
         disabled={!canStart}
-        className="w-full py-3.5 rounded-2xl bg-gray-900 text-white font-bold text-base hover:bg-gray-800 transition-colors active:scale-[0.98] disabled:opacity-40 disabled:pointer-events-none"
+        className="w-full py-3.5 rounded-2xl bg-primary text-primary-foreground font-bold text-base hover:bg-primary/90 transition-colors active:scale-[0.98] disabled:opacity-40 disabled:pointer-events-none"
       >
         Iniciar Partida
       </button>

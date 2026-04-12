@@ -50,8 +50,8 @@ export function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-16 md:pb-0">
-      <header className="bg-white border-b border-gray-100 px-4 py-4 shadow-sm">
+    <div className="min-h-screen bg-background pb-16 md:pb-0">
+      <header className="bg-card border-b border-border px-4 py-4 shadow-sm">
         <div className="max-w-2xl mx-auto flex items-center justify-between">
           <div>
             <h1 className="font-black text-xl text-gray-900 leading-tight">Pokédex TCG</h1>
@@ -87,7 +87,7 @@ export function Home() {
             </div>
             <button
               onClick={() => setCreateOpen(true)}
-              className="flex items-center gap-1.5 bg-gray-900 text-white text-sm font-bold px-4 py-2.5 rounded-2xl hover:bg-gray-800 transition-colors active:scale-95"
+              className="flex items-center gap-1.5 bg-primary text-primary-foreground text-sm font-bold px-4 py-2.5 rounded-2xl hover:bg-primary/90 transition-colors active:scale-95"
             >
               <span className="text-base leading-none">+</span> Novo
             </button>
@@ -113,7 +113,7 @@ export function Home() {
             <p className="text-gray-400 text-sm mt-1 mb-6">Crie um para começar a colecionar</p>
             <button
               onClick={() => setCreateOpen(true)}
-              className="bg-gray-900 text-white font-bold px-6 py-3 rounded-2xl hover:bg-gray-800 transition-colors"
+              className="bg-primary text-primary-foreground font-bold px-6 py-3 rounded-2xl hover:bg-primary/90 transition-colors"
             >
               Criar primeiro fichário
             </button>
