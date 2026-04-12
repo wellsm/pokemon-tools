@@ -1,13 +1,14 @@
 import { useState, useCallback } from 'react'
-import { flipCoins } from '@/game-store'
-import { MinusIcon, PlusIcon, XIcon } from 'lucide-react'
+import { flipCoins, type Side } from '@/game-store'
+import { MinusIcon, PlusIcon, XIcon, RotateCcwIcon } from 'lucide-react'
 
 interface CoinModalProps {
   open: boolean
+  side: Side
   onOpenChange: (open: boolean) => void
 }
 
-export function CoinModal({ open, onOpenChange }: CoinModalProps) {
+export function CoinModal({ open, side, onOpenChange }: CoinModalProps) {
   const [count, setCount] = useState(1)
   const [results, setResults] = useState<boolean[] | null>(null)
   const [flipping, setFlipping] = useState(false)
@@ -21,6 +22,11 @@ export function CoinModal({ open, onOpenChange }: CoinModalProps) {
     }, 1000)
   }, [count])
 
+  const handleReset = useCallback(() => {
+    setResults(null)
+    setCount(1)
+  }, [])
+
   const heads = results?.filter(Boolean).length ?? 0
   const tails = (results?.length ?? 0) - heads
 
@@ -33,17 +39,29 @@ export function CoinModal({ open, onOpenChange }: CoinModalProps) {
         onClick={() => onOpenChange(false)}
       />
 
-      <div className="relative z-10 bg-gray-900/95 border border-gray-700 rounded-2xl p-6 w-[320px] max-w-[90vw] space-y-5">
+      <div className={`relative z-10 bg-gray-900/95 border border-gray-700 rounded-2xl p-6 w-[320px] max-w-[90vw] space-y-5 ${side === 'a' ? 'rotate-180' : ''}`}>
         {/* Header */}
         <div className="flex items-center justify-between">
           <span className="text-white font-bold text-lg">🪙 Moedas</span>
-          <button
-            type="button"
-            onClick={() => onOpenChange(false)}
-            className="text-gray-500 hover:text-gray-300 transition-colors"
-          >
-            <XIcon className="size-5" />
-          </button>
+          <div className="flex items-center gap-2">
+            {results && (
+              <button
+                type="button"
+                onClick={handleReset}
+                className="text-gray-500 hover:text-gray-300 transition-colors"
+                title="Resetar"
+              >
+                <RotateCcwIcon className="size-5" />
+              </button>
+            )}
+            <button
+              type="button"
+              onClick={() => onOpenChange(false)}
+              className="text-gray-500 hover:text-gray-300 transition-colors"
+            >
+              <XIcon className="size-5" />
+            </button>
+          </div>
         </div>
 
         {/* Quantity selector */}
@@ -66,29 +84,31 @@ export function CoinModal({ open, onOpenChange }: CoinModalProps) {
           </button>
         </div>
 
-        {/* Coin display */}
-        <div className="flex justify-center gap-4 flex-wrap py-3">
-          {Array.from({ length: count }, (_, i) => {
-            const result = results?.[i]
-            const isHeads = result === true
-            return (
-              <div
-                key={i}
-                className={`w-16 h-16 rounded-full flex items-center justify-center text-xl font-black shadow-lg ${
-                  flipping ? 'coin-flipping' : ''
-                } ${
-                  result == null
-                    ? 'bg-gradient-to-br from-amber-400 to-amber-600 text-black/40'
-                    : isHeads
-                      ? 'bg-gradient-to-br from-amber-400 to-amber-600 text-black'
-                      : 'bg-gradient-to-br from-gray-400 to-gray-600 text-white'
-                }`}
-                style={{ perspective: '600px' }}
-              >
-                {result == null ? '?' : isHeads ? 'C' : 'K'}
-              </div>
-            )
-          })}
+        {/* Coin display — scrollable */}
+        <div className="max-h-40 overflow-y-auto">
+          <div className="flex justify-center gap-4 flex-wrap py-3">
+            {Array.from({ length: count }, (_, i) => {
+              const result = results?.[i]
+              const isHeads = result === true
+              return (
+                <div
+                  key={i}
+                  className={`w-16 h-16 rounded-full flex items-center justify-center text-xl font-black shadow-lg shrink-0 ${
+                    flipping ? 'coin-flipping' : ''
+                  } ${
+                    result == null
+                      ? 'bg-gradient-to-br from-amber-400 to-amber-600 text-black/40'
+                      : isHeads
+                        ? 'bg-gradient-to-br from-amber-400 to-amber-600 text-black'
+                        : 'bg-gradient-to-br from-gray-400 to-gray-600 text-white'
+                  }`}
+                  style={{ perspective: '600px' }}
+                >
+                  {result == null ? '?' : isHeads ? 'C' : 'K'}
+                </div>
+              )
+            })}
+          </div>
         </div>
 
         {/* Results summary */}

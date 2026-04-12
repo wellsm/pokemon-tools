@@ -3,7 +3,7 @@ import { useState } from "react";
 import { CoinModal } from "@/components/app/coin-modal";
 import { EnergyIndicator } from "@/components/app/energy-indicator";
 import { FieldSide } from "@/components/app/field-side";
-import { useGameStore } from "@/game-store";
+import { useGameStore, type Side } from "@/game-store";
 
 export function GameTable() {
   const format = useGameStore((s) => s.format);
@@ -15,7 +15,13 @@ export function GameTable() {
   const nextTurn = useGameStore((s) => s.nextTurn);
 
   const [coinOpen, setCoinOpen] = useState(false);
+  const [coinSide, setCoinSide] = useState<Side>('b');
   const [showEndConfirm, setShowEndConfirm] = useState(false);
+
+  function openCoin(side: Side) {
+    setCoinSide(side);
+    setCoinOpen(true);
+  }
 
   return (
     <div className="fixed inset-0 bg-gray-950 flex flex-col z-30">
@@ -52,7 +58,7 @@ export function GameTable() {
             <FieldSide
               field={fieldA}
               side="a"
-              onCoinFlip={modules.coins ? () => setCoinOpen(true) : undefined}
+              onCoinFlip={modules.coins ? () => openCoin('a') : undefined}
             />
           </div>
         )}
@@ -60,7 +66,7 @@ export function GameTable() {
           <FieldSide
             field={fieldB}
             side="b"
-            onCoinFlip={modules.coins ? () => setCoinOpen(true) : undefined}
+            onCoinFlip={modules.coins ? () => openCoin('b') : undefined}
           />
         )}
 
@@ -76,7 +82,7 @@ export function GameTable() {
         )}
       </div>
 
-      <CoinModal open={coinOpen} onOpenChange={setCoinOpen} />
+      <CoinModal open={coinOpen} side={coinSide} onOpenChange={setCoinOpen} />
 
       {showEndConfirm && (
         <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4">

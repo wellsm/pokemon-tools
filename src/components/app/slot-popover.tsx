@@ -22,13 +22,13 @@ export function SlotPopover({ slot, side, label, open, onOpenChange }: SlotPopov
   if (!open) return null
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
+    <div className={`fixed inset-0 z-50 flex flex-col ${side === 'a' ? 'justify-start pt-14' : 'justify-end pb-14'}`}>
       <div
         className="absolute inset-0 bg-black/40 backdrop-blur-[2px]"
         onClick={() => onOpenChange(false)}
       />
 
-      <div className={`relative z-10 bg-gray-900/95 border border-gray-700 rounded-2xl p-5 w-[320px] max-w-[90vw] space-y-5 ${side === 'a' ? 'rotate-180' : ''}`}>
+      <div className={`relative z-10 mx-auto bg-gray-900/95 border border-gray-700 rounded-2xl p-5 w-[320px] max-w-[90vw] space-y-5 ${side === 'a' ? 'rotate-180' : ''}`}>
         {/* Header */}
         <div className="flex items-center justify-between">
           <span className="text-white font-bold text-lg">{label}</span>
