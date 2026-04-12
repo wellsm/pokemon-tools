@@ -69,19 +69,22 @@ export function BoardSlot({
       )}
     >
       <span
-        className={`text-[8px] leading-none ${isActive ? labelColor : "text-gray-500"}`}
+        className={cn(
+          "leading-none",
+          isActive ? `text-xs sm:text-sm ${labelColor}` : "text-[10px] sm:text-xs text-gray-500",
+        )}
       >
         {label}
       </span>
-      <span className={`text-sm font-bold ${damageColor} mt-0.5`}>
+      <span className={cn("font-bold mt-0.5", damageColor, isActive ? "text-xl sm:text-2xl" : "text-base sm:text-lg")}>
         {slot.damage}
       </span>
       {slot.energies.length > 0 && (
-        <div className="flex gap-px mt-1 flex-wrap justify-center max-w-full px-0.5">
+        <div className="flex gap-0.5 mt-1 flex-wrap justify-center max-w-full px-0.5">
           {slot.energies.map((e, i) => (
             <span
               key={`${slot.id}-${i}`}
-              className="w-2.5 h-2.5 rounded-full border flex items-center justify-center text-[6px] leading-none"
+              className="w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full border flex items-center justify-center text-[8px] sm:text-[9px] leading-none"
               style={{
                 borderColor: ENERGY_COLOR[e],
                 backgroundColor: `${ENERGY_COLOR[e]}20`,

@@ -28,55 +28,53 @@ export function CoinModal({ open, onOpenChange }: CoinModalProps) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
-      {/* Backdrop — semi-transparent to see the field behind */}
       <div
         className="absolute inset-0 bg-black/40 backdrop-blur-[2px]"
         onClick={() => onOpenChange(false)}
       />
 
-      {/* Modal content */}
-      <div className="relative z-10 bg-gray-900/95 border border-gray-700 rounded-2xl p-5 w-[280px] max-w-[90vw] space-y-4">
+      <div className="relative z-10 bg-gray-900/95 border border-gray-700 rounded-2xl p-6 w-[320px] max-w-[90vw] space-y-5">
         {/* Header */}
         <div className="flex items-center justify-between">
-          <span className="text-white font-bold text-base">🪙 Moedas</span>
+          <span className="text-white font-bold text-lg">🪙 Moedas</span>
           <button
             type="button"
             onClick={() => onOpenChange(false)}
             className="text-gray-500 hover:text-gray-300 transition-colors"
           >
-            <XIcon className="size-4" />
+            <XIcon className="size-5" />
           </button>
         </div>
 
         {/* Quantity selector */}
-        <div className="flex items-center justify-center gap-3">
-          <span className="text-xs text-gray-400">Quantidade:</span>
+        <div className="flex items-center justify-center gap-4">
+          <span className="text-sm text-gray-400">Quantidade:</span>
           <button
             type="button"
             onClick={() => setCount((c) => Math.max(1, c - 1))}
-            className="w-7 h-7 rounded-lg bg-gray-800 border border-gray-700 flex items-center justify-center text-gray-300 hover:bg-gray-700 transition-colors"
+            className="w-9 h-9 rounded-lg bg-gray-800 border border-gray-700 flex items-center justify-center text-gray-300 hover:bg-gray-700 transition-colors"
           >
-            <MinusIcon className="size-3" />
+            <MinusIcon className="size-4" />
           </button>
-          <span className="text-xl font-bold text-white w-6 text-center">{count}</span>
+          <span className="text-2xl font-bold text-white w-8 text-center">{count}</span>
           <button
             type="button"
             onClick={() => setCount((c) => c + 1)}
-            className="w-7 h-7 rounded-lg bg-gray-800 border border-gray-700 flex items-center justify-center text-gray-300 hover:bg-gray-700 transition-colors"
+            className="w-9 h-9 rounded-lg bg-gray-800 border border-gray-700 flex items-center justify-center text-gray-300 hover:bg-gray-700 transition-colors"
           >
-            <PlusIcon className="size-3" />
+            <PlusIcon className="size-4" />
           </button>
         </div>
 
         {/* Coin display */}
-        <div className="flex justify-center gap-3 flex-wrap py-2">
+        <div className="flex justify-center gap-4 flex-wrap py-3">
           {Array.from({ length: count }, (_, i) => {
             const result = results?.[i]
             const isHeads = result === true
             return (
               <div
                 key={i}
-                className={`w-14 h-14 rounded-full flex items-center justify-center text-lg font-black shadow-lg ${
+                className={`w-16 h-16 rounded-full flex items-center justify-center text-xl font-black shadow-lg ${
                   flipping ? 'coin-flipping' : ''
                 } ${
                   result == null
@@ -95,7 +93,7 @@ export function CoinModal({ open, onOpenChange }: CoinModalProps) {
 
         {/* Results summary */}
         {results && (
-          <div className="text-center text-sm bg-gray-800/80 rounded-xl py-2 px-3">
+          <div className="text-center text-base bg-gray-800/80 rounded-xl py-2.5 px-4">
             <span className="text-green-400 font-semibold">{heads} Cara</span>
             {' · '}
             <span className="text-red-400 font-semibold">{tails} Coroa</span>
@@ -107,7 +105,7 @@ export function CoinModal({ open, onOpenChange }: CoinModalProps) {
           type="button"
           onClick={handleFlip}
           disabled={flipping}
-          className="w-full py-2.5 rounded-xl bg-amber-500 text-black font-bold text-sm hover:bg-amber-400 transition-colors active:scale-[0.98] disabled:opacity-50"
+          className="w-full py-3 rounded-xl bg-amber-500 text-black font-bold text-base hover:bg-amber-400 transition-colors active:scale-[0.98] disabled:opacity-50"
         >
           {results ? 'Jogar Novamente' : 'Jogar!'}
         </button>

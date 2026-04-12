@@ -15,20 +15,18 @@ export function EnergyIndicator({ side }: EnergyIndicatorProps) {
     return (
       <button
         onClick={() => generateEnergy(side)}
-        className="flex items-center gap-1.5 bg-gray-900/90 border border-gray-700 rounded-lg px-2.5 py-1.5 hover:bg-gray-800/90 transition-colors"
+        className="flex items-center gap-2 bg-gray-900/90 border border-gray-700 rounded-lg px-3 py-2 hover:bg-gray-800/90 transition-colors"
       >
-        <span className="text-base">⚡</span>
-        <span className="text-[10px] text-gray-400 leading-tight">
-          Gerar
-        </span>
+        <span className="text-lg">⚡</span>
+        <span className="text-sm text-gray-400">Gerar</span>
       </button>
     )
   }
 
   return (
-    <div className="flex items-center gap-1.5 bg-gray-900/90 border border-gray-700 rounded-lg px-2.5 py-1.5">
+    <div className="flex items-center gap-2 bg-gray-900/90 border border-gray-700 rounded-lg px-3 py-2">
       <div
-        className="w-7 h-7 rounded-full flex items-center justify-center text-sm"
+        className="w-8 h-8 rounded-full flex items-center justify-center text-base"
         style={{
           background: `linear-gradient(135deg, ${ENERGY_COLOR[energy]}, ${ENERGY_COLOR[energy]}88)`,
           boxShadow: `0 0 8px ${ENERGY_COLOR[energy]}40`,
@@ -36,7 +34,7 @@ export function EnergyIndicator({ side }: EnergyIndicatorProps) {
       >
         {ENERGY_EMOJI[energy]}
       </div>
-      <div className="text-[10px] leading-tight">
+      <div className="text-sm leading-tight">
         <div className="font-semibold" style={{ color: ENERGY_COLOR[energy] }}>
           Energia
         </div>

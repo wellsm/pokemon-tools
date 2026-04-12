@@ -95,7 +95,6 @@ export function FieldSide({ field, side, onCoinFlip }: FieldSideProps) {
   const activeSlot = field.slots.find((s) => s.position === "active");
   const benchSlots = field.slots.filter((s) => s.position === "bench");
   const selectedSlot = field.slots.find((s) => s.id === selectedSlotId);
-
   const lastBench = benchSlots[benchSlots.length - 1];
 
   function renderSlot(slot: (typeof field.slots)[number], slotLabel: string) {
@@ -137,31 +136,11 @@ export function FieldSide({ field, side, onCoinFlip }: FieldSideProps) {
 
   return (
     <div
-      className="flex flex-col items-center gap-1 flex-1 justify-start"
+      className="flex flex-col items-center gap-2 flex-1 justify-start"
       onTouchMove={handleTouchMove}
     >
-      <div className="flex items-center justify-between w-full px-2 absolute">
-        <div className="flex gap-1">
-          <button
-            type="button"
-            onClick={() => addSlot(side)}
-            className="text-green-500 bg-green-500/10 rounded px-1.5 py-0.5 text-[10px] hover:bg-green-500/20 transition-colors"
-          >
-            <PlusIcon className="size-3 inline" /> Slot
-          </button>
-          {lastBench && (
-            <button
-              type="button"
-              onClick={() => removeSlot(side, lastBench.id)}
-              className="text-red-500 bg-red-500/10 rounded px-1.5 py-0.5 text-[10px] hover:bg-red-500/20 transition-colors"
-            >
-              <MinusIcon className="size-3 inline" /> Slot
-            </button>
-          )}
-        </div>
-      </div>
-
       <div className="flex flex-col gap-4 items-center">
+        {/* Active + coin button */}
         <div className="relative">
           {activeSlot && renderSlot(activeSlot, "Ativo")}
           {coinButton && (
@@ -170,8 +149,30 @@ export function FieldSide({ field, side, onCoinFlip }: FieldSideProps) {
             </div>
           )}
         </div>
-        <div className="grid grid-cols-5 gap-2 flex-wrap justify-center">
-          {benchSlots.map((slot, i) => renderSlot(slot, `B${i + 1}`))}
+
+        {/* Bench + slot controls */}
+        <div className="flex flex-col items-end gap-1">
+          <div className="flex gap-1">
+            <button
+              type="button"
+              onClick={() => addSlot(side)}
+              className="text-green-400 bg-green-400/10 rounded px-2 py-1 text-xs hover:bg-green-400/20 transition-colors"
+            >
+              <PlusIcon className="size-3.5 inline" /> Slot
+            </button>
+            {lastBench && (
+              <button
+                type="button"
+                onClick={() => removeSlot(side, lastBench.id)}
+                className="text-red-400 bg-red-400/10 rounded px-2 py-1 text-xs hover:bg-red-400/20 transition-colors"
+              >
+                <MinusIcon className="size-3.5 inline" /> Slot
+              </button>
+            )}
+          </div>
+          <div className="grid grid-cols-5 gap-2 justify-center">
+            {benchSlots.map((slot, i) => renderSlot(slot, `B${i + 1}`))}
+          </div>
         </div>
       </div>
 

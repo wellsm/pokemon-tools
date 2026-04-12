@@ -21,26 +21,26 @@ export function GameTable() {
     <div className="fixed inset-0 bg-gray-950 flex flex-col z-30">
       {/* Top bar */}
       <div className="flex items-center justify-between px-3 py-2 bg-gray-900/80">
-        <div className="text-gray-400 text-xs">
+        <div className="text-gray-400 text-sm">
           {format === "standard" ? "Standard" : "Pocket"} · Turno {turn}
         </div>
-        <div className="flex gap-1.5">
+        <div className="flex gap-2">
           {modules.energy && (
             <button
               type="button"
               onClick={nextTurn}
-              className="flex items-center gap-1 text-xs text-gray-400 bg-gray-800 px-2 py-1 rounded hover:bg-gray-700 transition-colors"
+              className="flex items-center gap-1.5 text-sm text-gray-400 bg-gray-800 px-3 py-1.5 rounded-lg hover:bg-gray-700 transition-colors"
             >
-              <SkipForwardIcon className="size-3" />
+              <SkipForwardIcon className="size-4" />
               Próximo turno
             </button>
           )}
           <button
             type="button"
             onClick={() => setShowEndConfirm(true)}
-            className="text-xs text-red-400 bg-gray-800 px-2 py-1 rounded hover:bg-gray-700 transition-colors"
+            className="text-sm text-red-400 bg-gray-800 px-3 py-1.5 rounded-lg hover:bg-gray-700 transition-colors"
           >
-            <XIcon className="size-3" />
+            <XIcon className="size-4" />
           </button>
         </div>
       </div>
