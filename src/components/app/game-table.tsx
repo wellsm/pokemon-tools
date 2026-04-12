@@ -1,21 +1,14 @@
-import { SkipForwardIcon, XIcon } from "lucide-react";
 import { useState } from "react";
 import { CoinModal } from "@/components/app/coin-modal";
 import { EnergyIndicator } from "@/components/app/energy-indicator";
 import { FieldSide } from "@/components/app/field-side";
-import { useGameStore, type Side } from "@/game-store";
+import { type Side, useGameStore } from "@/game-store";
 
 export function GameTable() {
-  const format = useGameStore((s) => s.format);
-  const modules = useGameStore((s) => s.modules);
-  const turn = useGameStore((s) => s.turn);
-  const fieldA = useGameStore((s) => s.fieldA);
-  const fieldB = useGameStore((s) => s.fieldB);
-  const endGame = useGameStore((s) => s.endGame);
-  const nextTurn = useGameStore((s) => s.nextTurn);
+  const { modules, fieldA, fieldB, endGame } = useGameStore();
 
   const [coinOpen, setCoinOpen] = useState(false);
-  const [coinSide, setCoinSide] = useState<Side>('b');
+  const [coinSide, setCoinSide] = useState<Side>("b");
   const [showEndConfirm, setShowEndConfirm] = useState(false);
 
   function openCoin(side: Side) {
@@ -25,32 +18,6 @@ export function GameTable() {
 
   return (
     <div className="fixed inset-0 bg-gray-950 flex flex-col z-30">
-      {/* Top bar */}
-      <div className="flex items-center justify-between px-3 py-2 bg-gray-900/80">
-        <div className="text-gray-400 text-sm">
-          {format === "standard" ? "Standard" : "Pocket"} · Turno {turn}
-        </div>
-        <div className="flex gap-2">
-          {modules.energy && (
-            <button
-              type="button"
-              onClick={nextTurn}
-              className="flex items-center gap-1.5 text-sm text-gray-400 bg-gray-800 px-3 py-1.5 rounded-lg hover:bg-gray-700 transition-colors"
-            >
-              <SkipForwardIcon className="size-4" />
-              Próximo turno
-            </button>
-          )}
-          <button
-            type="button"
-            onClick={() => setShowEndConfirm(true)}
-            className="text-sm text-red-400 bg-gray-800 px-3 py-1.5 rounded-lg hover:bg-gray-700 transition-colors"
-          >
-            <XIcon className="size-4" />
-          </button>
-        </div>
-      </div>
-
       {/* Field area */}
       <div className="flex-1 flex flex-col justify-center items-center gap-4 relative overflow-hidden px-2 h-screen">
         {modules.board && (
@@ -58,7 +25,7 @@ export function GameTable() {
             <FieldSide
               field={fieldA}
               side="a"
-              onCoinFlip={modules.coins ? () => openCoin('a') : undefined}
+              onCoinFlip={modules.coins ? () => openCoin("a") : undefined}
             />
           </div>
         )}
@@ -66,7 +33,7 @@ export function GameTable() {
           <FieldSide
             field={fieldB}
             side="b"
-            onCoinFlip={modules.coins ? () => openCoin('b') : undefined}
+            onCoinFlip={modules.coins ? () => openCoin("b") : undefined}
           />
         )}
 
@@ -75,6 +42,7 @@ export function GameTable() {
             <EnergyIndicator side="a" />
           </div>
         )}
+
         {modules.energy && (
           <div className="absolute bottom-16 md:bottom-3 right-3 z-10">
             <EnergyIndicator side="b" />

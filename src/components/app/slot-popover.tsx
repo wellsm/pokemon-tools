@@ -1,6 +1,6 @@
 import { useGameStore, type Side } from '@/game-store'
 import {
-  ENERGY_TYPES, ENERGY_EMOJI, ENERGY_LABEL, ENERGY_COLOR,
+  ENERGY_TYPES, ENERGY_IMAGE, ENERGY_LABEL,
   type BoardSlot,
 } from '@/game-data'
 import { XIcon } from 'lucide-react'
@@ -74,30 +74,30 @@ export function SlotPopover({ slot, side, label, open, onOpenChange }: SlotPopov
         {/* Attached energies */}
         <div>
           <p className="text-sm text-gray-400 uppercase tracking-wider mb-2">Energias</p>
-          <div className="flex flex-wrap gap-2 items-center mb-2">
-            {slot.energies.map((e, i) => (
-              <button
-                key={i}
-                type="button"
-                onClick={() => removeEnergy(side, slot.id, i)}
-                className="w-8 h-8 rounded-full border flex items-center justify-center text-base hover:opacity-60 transition-opacity"
-                style={{ borderColor: ENERGY_COLOR[e], backgroundColor: `${ENERGY_COLOR[e]}20` }}
-                title={`Remover ${ENERGY_LABEL[e]}`}
-              >
-                {ENERGY_EMOJI[e]}
-              </button>
-            ))}
-          </div>
-          <div className="flex flex-wrap gap-1.5">
+          {slot.energies.length > 0 && (
+            <div className="flex flex-wrap gap-2 items-center mb-3">
+              {slot.energies.map((e, i) => (
+                <button
+                  key={i}
+                  type="button"
+                  onClick={() => removeEnergy(side, slot.id, i)}
+                  className="w-8 h-8 hover:opacity-60 transition-opacity"
+                  title={`Remover ${ENERGY_LABEL[e]}`}
+                >
+                  <img src={ENERGY_IMAGE[e]} alt={ENERGY_LABEL[e]} className="w-full h-full" />
+                </button>
+              ))}
+            </div>
+          )}
+          <div className="flex flex-wrap gap-2">
             {ENERGY_TYPES.map((type) => (
               <button
                 key={type}
                 type="button"
                 onClick={() => attachEnergy(side, slot.id, type)}
-                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-gray-800 border border-gray-700 text-sm text-gray-300 hover:bg-gray-700 transition-colors"
+                className="w-9 h-9 rounded-lg bg-gray-800 border border-gray-700 p-1 hover:bg-gray-700 transition-colors"
               >
-                <span>{ENERGY_EMOJI[type]}</span>
-                <span>{ENERGY_LABEL[type]}</span>
+                <img src={ENERGY_IMAGE[type]} alt={ENERGY_LABEL[type]} className="w-full h-full" />
               </button>
             ))}
           </div>

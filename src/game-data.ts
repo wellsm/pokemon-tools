@@ -74,3 +74,14 @@ export const FORMAT_DEFAULTS: Record<GameFormat, {
 }
 
 export const MAX_ENERGY_TYPES = 3 // Pocket allows max 3 types
+
+export const ENERGY_IMAGE: Record<EnergyType, string> = {
+  grass: '/images/grass.png',
+  fire: '/images/fire.png',
+  water: '/images/water.png',
+  lightning: '/images/eletric.png',
+  psychic: '/images/psychic.png',
+  fighting: '/images/fighting.png',
+  darkness: '/images/dark.png',
+  metal: '/images/steel.png',
+}

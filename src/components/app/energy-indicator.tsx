@@ -1,5 +1,5 @@
 import { useGameStore, type Side } from '@/game-store'
-import { ENERGY_EMOJI, ENERGY_LABEL, ENERGY_COLOR } from '@/game-data'
+import { ENERGY_IMAGE, ENERGY_LABEL } from '@/game-data'
 
 interface EnergyIndicatorProps {
   side: Side
@@ -25,17 +25,13 @@ export function EnergyIndicator({ side }: EnergyIndicatorProps) {
 
   return (
     <div className="flex items-center gap-2 bg-gray-900/90 border border-gray-700 rounded-lg px-3 py-2">
-      <div
-        className="w-8 h-8 rounded-full flex items-center justify-center text-base"
-        style={{
-          background: `linear-gradient(135deg, ${ENERGY_COLOR[energy]}, ${ENERGY_COLOR[energy]}88)`,
-          boxShadow: `0 0 8px ${ENERGY_COLOR[energy]}40`,
-        }}
-      >
-        {ENERGY_EMOJI[energy]}
-      </div>
+      <img
+        src={ENERGY_IMAGE[energy]}
+        alt={ENERGY_LABEL[energy]}
+        className="w-8 h-8"
+      />
       <div className="text-sm leading-tight">
-        <div className="font-semibold" style={{ color: ENERGY_COLOR[energy] }}>
+        <div className="font-semibold text-gray-200">
           Energia
         </div>
         <div className="text-gray-400">{ENERGY_LABEL[energy]}</div>

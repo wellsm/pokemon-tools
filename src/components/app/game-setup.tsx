@@ -1,7 +1,7 @@
 // src/components/app/game-setup.tsx
 import { useGameStore } from '@/game-store'
 import {
-  ENERGY_TYPES, ENERGY_LABEL, ENERGY_EMOJI,
+  ENERGY_TYPES, ENERGY_LABEL, ENERGY_IMAGE,
   FORMAT_DEFAULTS, MAX_ENERGY_TYPES,
   type EnergyType, type GameFormat,
 } from '@/game-data'
@@ -106,7 +106,7 @@ export function GameSetup() {
                   key={type}
                   onClick={() => toggleEnergy(type)}
                   disabled={disabled}
-                  className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm transition-all border-2 ${
+                  className={`flex items-center gap-2 px-3 py-2 rounded-xl text-sm transition-all border-2 ${
                     selected
                       ? 'border-gray-900 bg-gray-900 text-white'
                       : disabled
@@ -114,7 +114,7 @@ export function GameSetup() {
                         : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300'
                   }`}
                 >
-                  <span>{ENERGY_EMOJI[type]}</span>
+                  <img src={ENERGY_IMAGE[type]} alt={ENERGY_LABEL[type]} className="w-5 h-5" />
                   <span>{ENERGY_LABEL[type]}</span>
                 </button>
               )

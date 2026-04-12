@@ -115,7 +115,9 @@ export function FieldSide({ field, side, onCoinFlip }: FieldSideProps) {
           setDragOverId(null);
         }}
         onDragOver={() => {
-          if (dragFromId && dragFromId !== slot.id) setDragOverId(slot.id);
+          if (dragFromId && dragFromId !== slot.id) {
+            setDragOverId(slot.id);
+          }
         }}
         onDrop={() => handleDrop(slot.id)}
         onTouchStart={(e) => handleTouchStart(slot.id, e)}
@@ -128,7 +130,7 @@ export function FieldSide({ field, side, onCoinFlip }: FieldSideProps) {
     <button
       type="button"
       onClick={onCoinFlip}
-      className="w-10 h-10 rounded-full bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-base shadow-lg shadow-amber-500/30 hover:scale-105 active:scale-95 transition-transform"
+      className="w-10 h-10 rounded-full bg-linear-to-br from-amber-400 to-amber-600 flex items-center justify-center text-base shadow-lg shadow-amber-500/30 hover:scale-105 active:scale-95 transition-transform"
     >
       🪙
     </button>
@@ -136,7 +138,7 @@ export function FieldSide({ field, side, onCoinFlip }: FieldSideProps) {
 
   return (
     <div
-      className="flex flex-col items-center gap-2 flex-1 justify-start"
+      className="flex flex-col items-center gap-1 flex-1 justify-start"
       onTouchMove={handleTouchMove}
     >
       <div className="flex flex-col gap-4 items-center">
@@ -151,12 +153,12 @@ export function FieldSide({ field, side, onCoinFlip }: FieldSideProps) {
         </div>
 
         {/* Bench + slot controls */}
-        <div className="flex flex-col items-end gap-1">
-          <div className="flex gap-1">
+        <div className="flex flex-col items-end gap-1 relative">
+          <div className="flex gap-1 absolute -top-12">
             <button
               type="button"
               onClick={() => addSlot(side)}
-              className="text-green-400 bg-green-400/10 rounded px-2 py-1 text-xs hover:bg-green-400/20 transition-colors"
+              className="text-green-400 bg-green-400/10 rounded-md px-4 py-2 text-base hover:bg-green-400/20 transition-colors"
             >
               <PlusIcon className="size-3.5 inline" /> Slot
             </button>
@@ -164,7 +166,7 @@ export function FieldSide({ field, side, onCoinFlip }: FieldSideProps) {
               <button
                 type="button"
                 onClick={() => removeSlot(side, lastBench.id)}
-                className="text-red-400 bg-red-400/10 rounded px-2 py-1 text-xs hover:bg-red-400/20 transition-colors"
+                className="text-red-400 bg-red-400/10 rounded-md px-4 py-2 text-base hover:bg-red-400/20 transition-colors"
               >
                 <MinusIcon className="size-3.5 inline" /> Slot
               </button>

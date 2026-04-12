@@ -1,5 +1,5 @@
-import type { BoardSlot as BoardSlotType } from "@/game-data";
-import { ENERGY_COLOR, ENERGY_EMOJI } from "@/game-data";
+import type { BoardSlot as BoardSlotType, EnergyType } from "@/game-data";
+import { ENERGY_IMAGE } from "@/game-data";
 import type { Side } from "@/game-store";
 import { cn } from "@/lib/utils";
 
@@ -16,6 +16,14 @@ interface BoardSlotProps {
   onDrop?: () => void;
   onTouchStart?: (e: React.TouchEvent) => void;
   onTouchEnd?: (e: React.TouchEvent) => void;
+}
+
+function groupEnergies(energies: EnergyType[]): { type: EnergyType; count: number }[] {
+  const map = new Map<EnergyType, number>();
+  for (const e of energies) {
+    map.set(e, (map.get(e) ?? 0) + 1);
+  }
+  return Array.from(map, ([type, count]) => ({ type, count }));
 }
 
 export function BoardSlot({
@@ -36,6 +44,7 @@ export function BoardSlot({
   const borderColor = variant === "a" ? "border-blue-400" : "border-red-400";
   const labelColor = variant === "a" ? "text-blue-400" : "text-red-400";
   const damageColor = slot.damage > 0 ? "text-amber-400" : "text-gray-500";
+  const grouped = groupEnergies(slot.energies);
 
   return (
     <button
@@ -60,10 +69,10 @@ export function BoardSlot({
       onTouchStart={onTouchStart}
       onTouchEnd={onTouchEnd}
       className={cn(
-        "flex flex-col items-center justify-center rounded-md transition-all select-none touch-none cursor-grab active:cursor-grabbing",
+        "relative flex flex-col items-center justify-center rounded-md transition-all select-none touch-none cursor-grab active:cursor-grabbing w-18 sm:w-24 md:w-32 h-26 sm:h-36 md:h-42",
         isActive
-          ? `w-20 sm:w-32 md:w-36 h-28 sm:h-40 md:h-48 border-2 ${borderColor} bg-gray-900`
-          : "w-18 sm:w-24 md:w-32 h-26 sm:h-36 md:h-42 border border-gray-700 bg-gray-900",
+          ? `border-2 ${borderColor} bg-gray-900`
+          : "border border-gray-700 bg-gray-900",
         isDragOver ? "ring-2 ring-amber-400 scale-105" : "",
         isDragging ? "opacity-40 scale-95" : "",
       )}
@@ -79,19 +88,21 @@ export function BoardSlot({
       <span className={cn("font-bold mt-0.5", damageColor, isActive ? "text-xl sm:text-2xl" : "text-base sm:text-lg")}>
         {slot.damage}
       </span>
-      {slot.energies.length > 0 && (
-        <div className="flex gap-0.5 mt-1 flex-wrap justify-center max-w-full px-0.5">
-          {slot.energies.map((e, i) => (
-            <span
-              key={`${slot.id}-${i}`}
-              className="w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full border flex items-center justify-center text-[8px] sm:text-[9px] leading-none"
-              style={{
-                borderColor: ENERGY_COLOR[e],
-                backgroundColor: `${ENERGY_COLOR[e]}20`,
-              }}
-            >
-              {ENERGY_EMOJI[e]}
-            </span>
+
+      {/* Energy images — bottom right corner */}
+      {grouped.length > 0 && (
+        <div className="absolute bottom-1 right-1 flex flex-col gap-0.5 items-end">
+          {grouped.map(({ type, count }) => (
+            <div key={type} className="flex items-center gap-0.5">
+              {count > 1 && (
+                <span className="text-[9px] sm:text-[10px] font-bold text-gray-300">{count}</span>
+              )}
+              <img
+                src={ENERGY_IMAGE[type]}
+                alt={type}
+                className="w-4 h-4 sm:w-5 sm:h-5"
+              />
+            </div>
           ))}
         </div>
       )}
