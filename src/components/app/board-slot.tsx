@@ -21,6 +21,7 @@ interface BoardSlotProps {
 export function BoardSlot({
   slot,
   label,
+  variant,
   onClick,
   isDragOver,
   isDragging,
@@ -32,6 +33,8 @@ export function BoardSlot({
   onTouchEnd,
 }: BoardSlotProps) {
   const isActive = slot.position === "active";
+  const borderColor = variant === "a" ? "border-blue-400" : "border-red-400";
+  const labelColor = variant === "a" ? "text-blue-400" : "text-red-400";
   const damageColor = slot.damage > 0 ? "text-amber-400" : "text-gray-500";
 
   return (
@@ -59,14 +62,14 @@ export function BoardSlot({
       className={cn(
         "flex flex-col items-center justify-center rounded transition-all select-none touch-none cursor-grab active:cursor-grabbing",
         isActive
-          ? "w-20 sm:w-32 md:w-36 h-28 sm:h-40 md:h-48 border-2 border-blue-400 bg-gray-900"
+          ? `w-20 sm:w-32 md:w-36 h-28 sm:h-40 md:h-48 border-2 ${borderColor} bg-gray-900`
           : "w-18 sm:w-24 md:w-32 h-26 sm:h-36 md:h-42 border border-gray-700 bg-gray-900",
         isDragOver ? "ring-2 ring-amber-400 scale-105" : "",
         isDragging ? "opacity-40 scale-95" : "",
       )}
     >
       <span
-        className={`text-[8px] leading-none ${isActive ? "text-blue-400" : "text-gray-500"}`}
+        className={`text-[8px] leading-none ${isActive ? labelColor : "text-gray-500"}`}
       >
         {label}
       </span>
