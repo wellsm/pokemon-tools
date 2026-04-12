@@ -1,7 +1,7 @@
-import type { BoardSlot as BoardSlotType, EnergyType } from "@/game-data";
-import { ENERGY_IMAGE } from "@/game-data";
+import type { BoardSlot as BoardSlotType } from "@/game-data";
 import type { Side } from "@/game-store";
 import { cn } from "@/lib/utils";
+import { EnergyBadge } from "@/components/app/energy-badge";
 
 interface BoardSlotProps {
   slot: BoardSlotType;
@@ -16,14 +16,6 @@ interface BoardSlotProps {
   onDrop?: () => void;
   onTouchStart?: (e: React.TouchEvent) => void;
   onTouchEnd?: (e: React.TouchEvent) => void;
-}
-
-function groupEnergies(energies: EnergyType[]): { type: EnergyType; count: number }[] {
-  const map = new Map<EnergyType, number>();
-  for (const e of energies) {
-    map.set(e, (map.get(e) ?? 0) + 1);
-  }
-  return Array.from(map, ([type, count]) => ({ type, count }));
 }
 
 export function BoardSlot({
@@ -44,7 +36,6 @@ export function BoardSlot({
   const borderColor = variant === "a" ? "border-blue-400" : "border-red-400";
   const labelColor = variant === "a" ? "text-blue-400" : "text-red-400";
   const damageColor = slot.damage > 0 ? "text-amber-400" : "text-gray-500";
-  const grouped = groupEnergies(slot.energies);
 
   return (
     <button
@@ -89,21 +80,9 @@ export function BoardSlot({
         {slot.damage}
       </span>
 
-      {/* Energy images — bottom right corner */}
-      {grouped.length > 0 && (
-        <div className="absolute bottom-1 right-1 flex flex-col gap-0.5 items-end">
-          {grouped.map(({ type, count }) => (
-            <div key={type} className="flex items-center gap-0.5">
-              {count > 1 && (
-                <span className="text-[9px] sm:text-[10px] font-bold text-gray-300">{count}</span>
-              )}
-              <img
-                src={ENERGY_IMAGE[type]}
-                alt={type}
-                className="w-4 h-4 sm:w-5 sm:h-5"
-              />
-            </div>
-          ))}
+      {slot.energies.length > 0 && (
+        <div className="absolute bottom-1 right-1">
+          <EnergyBadge energies={slot.energies} size="sm" />
         </div>
       )}
     </button>

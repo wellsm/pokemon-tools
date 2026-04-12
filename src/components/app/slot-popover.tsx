@@ -1,8 +1,6 @@
 import { useGameStore, type Side } from '@/game-store'
-import {
-  ENERGY_TYPES, ENERGY_IMAGE, ENERGY_LABEL,
-  type BoardSlot,
-} from '@/game-data'
+import { ENERGY_TYPES, ENERGY_IMAGE, ENERGY_LABEL, type BoardSlot } from '@/game-data'
+import { EnergyBadge } from '@/components/app/energy-badge'
 import { XIcon } from 'lucide-react'
 
 interface SlotPopoverProps {
@@ -17,7 +15,8 @@ export function SlotPopover({ slot, side, label, open, onOpenChange }: SlotPopov
   const addDamage = useGameStore((s) => s.addDamage)
   const clearDamage = useGameStore((s) => s.clearDamage)
   const attachEnergy = useGameStore((s) => s.attachEnergy)
-  const removeEnergy = useGameStore((s) => s.removeEnergy)
+  const removeOneEnergy = useGameStore((s) => s.removeOneEnergy)
+  const clearEnergies = useGameStore((s) => s.clearEnergies)
 
   if (!open) return null
 
@@ -75,18 +74,12 @@ export function SlotPopover({ slot, side, label, open, onOpenChange }: SlotPopov
         <div>
           <p className="text-sm text-gray-400 uppercase tracking-wider mb-2">Energias</p>
           {slot.energies.length > 0 && (
-            <div className="flex flex-wrap gap-2 items-center mb-3">
-              {slot.energies.map((e, i) => (
-                <button
-                  key={i}
-                  type="button"
-                  onClick={() => removeEnergy(side, slot.id, i)}
-                  className="w-8 h-8 hover:opacity-60 transition-opacity"
-                  title={`Remover ${ENERGY_LABEL[e]}`}
-                >
-                  <img src={ENERGY_IMAGE[e]} alt={ENERGY_LABEL[e]} className="w-full h-full" />
-                </button>
-              ))}
+            <div className="mb-3">
+              <EnergyBadge
+                energies={slot.energies}
+                size="md"
+                onRemove={(type) => removeOneEnergy(side, slot.id, type)}
+              />
             </div>
           )}
           <div className="flex flex-wrap gap-2">
@@ -104,13 +97,24 @@ export function SlotPopover({ slot, side, label, open, onOpenChange }: SlotPopov
         </div>
 
         {/* Actions */}
-        <button
-          type="button"
-          onClick={() => clearDamage(side, slot.id)}
-          className="w-full py-2.5 rounded-xl bg-gray-800 border border-gray-700 text-sm font-medium text-gray-300 hover:bg-gray-700 transition-colors"
-        >
-          Limpar dano
-        </button>
+        <div className="flex gap-2">
+          <button
+            type="button"
+            onClick={() => clearDamage(side, slot.id)}
+            className="flex-1 py-2.5 rounded-xl bg-gray-800 border border-gray-700 text-sm font-medium text-gray-300 hover:bg-gray-700 transition-colors"
+          >
+            Limpar dano
+          </button>
+          {slot.energies.length > 0 && (
+            <button
+              type="button"
+              onClick={() => clearEnergies(side, slot.id)}
+              className="flex-1 py-2.5 rounded-xl bg-gray-800 border border-gray-700 text-sm font-medium text-gray-300 hover:bg-gray-700 transition-colors"
+            >
+              Limpar energias
+            </button>
+          )}
+        </div>
       </div>
     </div>
   )

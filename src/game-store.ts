@@ -31,6 +31,8 @@ interface GameState {
   clearDamage: (side: Side, slotId: string) => void
   attachEnergy: (side: Side, slotId: string, energy: EnergyType) => void
   removeEnergy: (side: Side, slotId: string, index: number) => void
+  removeOneEnergy: (side: Side, slotId: string, energy: EnergyType) => void
+  clearEnergies: (side: Side, slotId: string) => void
   addSlot: (side: Side) => void
   removeSlot: (side: Side, slotId: string) => void
   swapSlots: (side: Side, fromId: string, toId: string) => void
@@ -161,6 +163,25 @@ export const useGameStore = create<GameState>()(
                 ? { ...sl, energies: sl.energies.filter((_, i) => i !== index) }
                 : sl
             )
+          ),
+        })),
+
+      removeOneEnergy: (side, slotId, energy) =>
+        set((s) => ({
+          [fieldKey(side)]: updateSlots(getField(s, side), (slots) =>
+            slots.map((sl) => {
+              if (sl.id !== slotId) return sl
+              const idx = sl.energies.indexOf(energy)
+              if (idx === -1) return sl
+              return { ...sl, energies: sl.energies.filter((_, i) => i !== idx) }
+            })
+          ),
+        })),
+
+      clearEnergies: (side, slotId) =>
+        set((s) => ({
+          [fieldKey(side)]: updateSlots(getField(s, side), (slots) =>
+            slots.map((sl) => (sl.id === slotId ? { ...sl, energies: [] } : sl))
           ),
         })),
 
