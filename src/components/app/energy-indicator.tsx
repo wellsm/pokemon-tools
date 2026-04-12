@@ -11,15 +11,11 @@ export function EnergyIndicator({ side }: EnergyIndicatorProps) {
   )
   const generateEnergy = useGameStore((s) => s.generateEnergy)
 
-  const positionClass = side === 'b'
-    ? 'bottom-16 md:bottom-3 right-3'
-    : 'top-12 left-3'
-
   if (!energy) {
     return (
       <button
         onClick={() => generateEnergy(side)}
-        className={`absolute z-10 ${positionClass} flex items-center gap-1.5 bg-gray-900/90 border border-gray-700 rounded-lg px-2.5 py-1.5 hover:bg-gray-800/90 transition-colors`}
+        className="flex items-center gap-1.5 bg-gray-900/90 border border-gray-700 rounded-lg px-2.5 py-1.5 hover:bg-gray-800/90 transition-colors"
       >
         <span className="text-base">⚡</span>
         <span className="text-[10px] text-gray-400 leading-tight">
@@ -30,9 +26,7 @@ export function EnergyIndicator({ side }: EnergyIndicatorProps) {
   }
 
   return (
-    <div
-      className={`absolute z-10 ${positionClass} flex items-center gap-1.5 bg-gray-900/90 border border-gray-700 rounded-lg px-2.5 py-1.5`}
-    >
+    <div className="flex items-center gap-1.5 bg-gray-900/90 border border-gray-700 rounded-lg px-2.5 py-1.5">
       <div
         className="w-7 h-7 rounded-full flex items-center justify-center text-sm"
         style={{
