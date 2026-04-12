@@ -1,4 +1,3 @@
-// src/game-store.ts
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import { nanoid } from 'nanoid'
@@ -7,16 +6,18 @@ import type {
 } from '@/game-data'
 import { FORMAT_DEFAULTS } from '@/game-data'
 
+export type Side = 'a' | 'b'
+
 interface GameState {
   format: GameFormat
   modules: GameModules
   energyPool: EnergyType[]
   active: boolean
   turn: number
-  myField: FieldSide
-  opponentField: FieldSide
-  currentEnergy: EnergyType | null
-  opponentEnergy: EnergyType | null
+  fieldA: FieldSide
+  fieldB: FieldSide
+  energyA: EnergyType | null
+  energyB: EnergyType | null
 
   setFormat: (format: GameFormat) => void
   setModules: (modules: GameModules) => void
@@ -24,15 +25,15 @@ interface GameState {
   startGame: () => void
   endGame: () => void
   nextTurn: () => void
-  generateEnergy: (side: 'my' | 'opponent') => void
+  generateEnergy: (side: Side) => void
 
-  addDamage: (side: 'my' | 'opponent', slotId: string, amount: number) => void
-  clearDamage: (side: 'my' | 'opponent', slotId: string) => void
-  attachEnergy: (side: 'my' | 'opponent', slotId: string, energy: EnergyType) => void
-  removeEnergy: (side: 'my' | 'opponent', slotId: string, index: number) => void
-  addSlot: (side: 'my' | 'opponent') => void
-  removeSlot: (side: 'my' | 'opponent', slotId: string) => void
-  swapSlots: (side: 'my' | 'opponent', fromId: string, toId: string) => void
+  addDamage: (side: Side, slotId: string, amount: number) => void
+  clearDamage: (side: Side, slotId: string) => void
+  attachEnergy: (side: Side, slotId: string, energy: EnergyType) => void
+  removeEnergy: (side: Side, slotId: string, index: number) => void
+  addSlot: (side: Side) => void
+  removeSlot: (side: Side, slotId: string) => void
+  swapSlots: (side: Side, fromId: string, toId: string) => void
 }
 
 function createSlots(benchSize: number): BoardSlot[] {
@@ -47,12 +48,12 @@ function createSlots(benchSize: number): BoardSlot[] {
   ]
 }
 
-function getField(state: GameState, side: 'my' | 'opponent'): FieldSide {
-  return side === 'my' ? state.myField : state.opponentField
+function getField(state: GameState, side: Side): FieldSide {
+  return side === 'a' ? state.fieldA : state.fieldB
 }
 
-function fieldKey(side: 'my' | 'opponent'): 'myField' | 'opponentField' {
-  return side === 'my' ? 'myField' : 'opponentField'
+function fieldKey(side: Side): 'fieldA' | 'fieldB' {
+  return side === 'a' ? 'fieldA' : 'fieldB'
 }
 
 function updateSlots(
@@ -72,10 +73,10 @@ export const useGameStore = create<GameState>()(
       energyPool: [],
       active: false,
       turn: 0,
-      myField: { slots: [] },
-      opponentField: { slots: [] },
-      currentEnergy: null,
-      opponentEnergy: null,
+      fieldA: { slots: [] },
+      fieldB: { slots: [] },
+      energyA: null,
+      energyB: null,
 
       setFormat: (format) => {
         const defaults = FORMAT_DEFAULTS[format]
@@ -92,10 +93,10 @@ export const useGameStore = create<GameState>()(
         set({
           active: true,
           turn: 1,
-          myField: { slots: createSlots(benchSize) },
-          opponentField: { slots: createSlots(benchSize) },
-          currentEnergy: null,
-          opponentEnergy: null,
+          fieldA: { slots: createSlots(benchSize) },
+          fieldB: { slots: createSlots(benchSize) },
+          energyA: null,
+          energyB: null,
         })
       },
 
@@ -103,24 +104,24 @@ export const useGameStore = create<GameState>()(
         set({
           active: false,
           turn: 0,
-          myField: { slots: [] },
-          opponentField: { slots: [] },
-          currentEnergy: null,
-          opponentEnergy: null,
+          fieldA: { slots: [] },
+          fieldB: { slots: [] },
+          energyA: null,
+          energyB: null,
         }),
 
       nextTurn: () =>
-        set((s) => ({
-          turn: s.turn + 1,
-          currentEnergy: null,
-          opponentEnergy: null,
+        set(() => ({
+          turn: get().turn + 1,
+          energyA: null,
+          energyB: null,
         })),
 
       generateEnergy: (side) => {
         const { energyPool } = get()
         if (energyPool.length === 0) return
         const energy = energyPool[Math.floor(Math.random() * energyPool.length)]
-        set(side === 'my' ? { currentEnergy: energy } : { opponentEnergy: energy })
+        set(side === 'a' ? { energyA: energy } : { energyB: energy })
       },
 
       addDamage: (side, slotId, amount) =>
@@ -187,10 +188,8 @@ export const useGameStore = create<GameState>()(
           const newSlots = [...field.slots]
           const fromPos = newSlots[fromIdx].position
           const toPos = newSlots[toIdx].position
-          // Swap position fields (handles active↔bench)
           newSlots[fromIdx] = { ...newSlots[fromIdx], position: toPos }
           newSlots[toIdx] = { ...newSlots[toIdx], position: fromPos }
-          // Swap array positions (handles visible ordering)
           ;[newSlots[fromIdx], newSlots[toIdx]] = [newSlots[toIdx], newSlots[fromIdx]]
           return { [fieldKey(side)]: { slots: newSlots } }
         }),

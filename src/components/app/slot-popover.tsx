@@ -1,16 +1,16 @@
 // src/components/app/slot-popover.tsx
-import { useGameStore } from '@/game-store'
+import { useGameStore, type Side } from '@/game-store'
 import {
   ENERGY_TYPES, ENERGY_EMOJI, ENERGY_LABEL, ENERGY_COLOR,
   type BoardSlot,
 } from '@/game-data'
 import {
-  Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerDescription,
+  Drawer, DrawerContent, DrawerHeader, DrawerTitle,
 } from '@/components/ui/drawer'
 
 interface SlotPopoverProps {
   slot: BoardSlot
-  side: 'my' | 'opponent'
+  side: Side
   label: string
   open: boolean
   onOpenChange: (open: boolean) => void
@@ -27,9 +27,6 @@ export function SlotPopover({ slot, side, label, open, onOpenChange }: SlotPopov
       <DrawerContent>
         <DrawerHeader>
           <DrawerTitle>{label}</DrawerTitle>
-          <DrawerDescription>
-            {side === 'my' ? 'Seu campo' : 'Campo adversário'}
-          </DrawerDescription>
         </DrawerHeader>
         <div className="px-4 pb-6 space-y-4">
           {/* Damage counter */}

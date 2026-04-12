@@ -1,18 +1,17 @@
-// src/components/app/energy-indicator.tsx
-import { useGameStore } from '@/game-store'
+import { useGameStore, type Side } from '@/game-store'
 import { ENERGY_EMOJI, ENERGY_LABEL, ENERGY_COLOR } from '@/game-data'
 
 interface EnergyIndicatorProps {
-  side: 'my' | 'opponent'
+  side: Side
 }
 
 export function EnergyIndicator({ side }: EnergyIndicatorProps) {
   const energy = useGameStore((s) =>
-    side === 'my' ? s.currentEnergy : s.opponentEnergy
+    side === 'a' ? s.energyA : s.energyB
   )
   const generateEnergy = useGameStore((s) => s.generateEnergy)
 
-  const positionClass = side === 'my'
+  const positionClass = side === 'b'
     ? 'bottom-16 md:bottom-3 right-3'
     : 'top-12 left-3'
 
@@ -45,7 +44,7 @@ export function EnergyIndicator({ side }: EnergyIndicatorProps) {
       </div>
       <div className="text-[10px] leading-tight">
         <div className="font-semibold" style={{ color: ENERGY_COLOR[energy] }}>
-          {side === 'my' ? 'Próxima' : 'Próxima'}
+          Energia
         </div>
         <div className="text-gray-400">{ENERGY_LABEL[energy]}</div>
       </div>
