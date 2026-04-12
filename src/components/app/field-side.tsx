@@ -171,18 +171,24 @@ export function FieldSide({ field, side, onCoinFlip }: FieldSideProps) {
           <div className="grid grid-cols-5 flex-wrap items-center justify-center gap-2">
             {benchSlots.map((slot, i) => renderSlot(slot, `B${i + 1}`))}
           </div>
-          {/* Active + coin button row (top side: coin on left, mirrored) */}
-          <div className="flex items-center gap-2">
-            {coinButton}
+          <div className="relative">
             {activeSlot && renderSlot(activeSlot, "Ativo")}
+            {coinButton && (
+              <div className="absolute top-1/2 -translate-y-1/2 -left-12">
+                {coinButton}
+              </div>
+            )}
           </div>
         </div>
       ) : (
         <div className="flex flex-col gap-4 items-center">
-          {/* Active + coin button row (bottom side: coin on right) */}
-          <div className="flex items-center gap-2">
+          <div className="relative">
             {activeSlot && renderSlot(activeSlot, "Ativo")}
-            {coinButton}
+            {coinButton && (
+              <div className="absolute top-1/2 -translate-y-1/2 -right-12">
+                {coinButton}
+              </div>
+            )}
           </div>
           <div className="grid grid-cols-5 gap-2 flex-wrap justify-center">
             {benchSlots.map((slot, i) => renderSlot(slot, `B${i + 1}`))}
