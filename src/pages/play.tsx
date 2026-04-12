@@ -11,7 +11,7 @@ export function Play() {
 
   return (
     <div className="min-h-screen bg-background pb-16 md:pb-0">
-      <header className="bg-primary px-4 py-4 shadow-sm">
+      <header className="bg-primary border-b border-white/10 px-4 py-4 shadow-sm">
         <div className="max-w-md mx-auto">
           <h1 className="font-black text-xl text-white">Jogar</h1>
           <p className="text-xs text-white/70">Configure sua partida</p>

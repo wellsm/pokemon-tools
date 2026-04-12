@@ -55,7 +55,7 @@ export function TabBar() {
                 key={tab.to}
                 to={tab.to}
                 className={({ isActive }) =>
-                  `flex-1 flex flex-col items-center py-2.5 text-xs transition-colors ${isActive ? "text-white font-bold" : "text-white/60"
+                  `flex-1 flex flex-col items-center py-4 text-xs transition-colors ${isActive ? "text-white font-bold" : "text-white/60"
                   }`
                 }
               >
