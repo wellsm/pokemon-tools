@@ -1,3 +1,4 @@
+import { createPortal } from 'react-dom'
 import { useGameStore, type Side } from '@/game-store'
 import { ENERGY_TYPES, ENERGY_IMAGE, ENERGY_LABEL, type BoardSlot } from '@/game-data'
 import { EnergyBadge } from '@/components/app/energy-badge'
@@ -20,7 +21,7 @@ export function SlotPopover({ slot, side, label, open, onOpenChange }: SlotPopov
 
   if (!open) return null
 
-  return (
+  return createPortal(
     <div className={`fixed inset-0 z-50 flex flex-col ${side === 'a' ? 'justify-start pt-14' : 'justify-end pb-14'}`}>
       <div
         className="absolute inset-0 bg-black/40 backdrop-blur-[2px]"
@@ -116,6 +117,7 @@ export function SlotPopover({ slot, side, label, open, onOpenChange }: SlotPopov
           )}
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   )
 }

@@ -1,7 +1,7 @@
+import { EnergyBadge } from "@/components/app/energy-badge";
 import type { BoardSlot as BoardSlotType } from "@/game-data";
 import type { Side } from "@/game-store";
 import { cn } from "@/lib/utils";
-import { EnergyBadge } from "@/components/app/energy-badge";
 
 interface BoardSlotProps {
   slot: BoardSlotType;
@@ -60,7 +60,7 @@ export function BoardSlot({
       onTouchStart={onTouchStart}
       onTouchEnd={onTouchEnd}
       className={cn(
-        "relative flex flex-col items-center justify-center rounded-md transition-all select-none touch-none cursor-grab active:cursor-grabbing w-18 sm:w-24 md:w-32 h-26 sm:h-36 md:h-42",
+        "relative flex flex-col items-center justify-between rounded-md transition-all select-none touch-none cursor-grab active:cursor-grabbing w-18 sm:w-24 md:w-32 h-26 sm:h-36 md:h-42 py-1",
         isActive
           ? `border-2 ${borderColor} bg-gray-900`
           : "border border-gray-700 bg-gray-900",
@@ -68,22 +68,30 @@ export function BoardSlot({
         isDragging ? "opacity-40 scale-95" : "",
       )}
     >
-      <span
-        className={cn(
-          "leading-none",
-          isActive ? `text-xs sm:text-sm ${labelColor}` : "text-[10px] sm:text-xs text-gray-500",
-        )}
-      >
-        {label}
-      </span>
-      <span className={cn("font-bold mt-0.5", damageColor, isActive ? "text-xl sm:text-2xl" : "text-base sm:text-lg")}>
-        {slot.damage}
-      </span>
+      <div className="flex flex-col">
+        <span
+          className={cn(
+            "leading-none",
+            isActive
+              ? `text-xs sm:text-sm ${labelColor}`
+              : "text-[10px] sm:text-xs text-gray-500",
+          )}
+        >
+          {label}
+        </span>
+        <span
+          className={cn(
+            "font-bold mt-0.5",
+            damageColor,
+            isActive ? "text-xl sm:text-2xl" : "text-base sm:text-lg",
+          )}
+        >
+          {slot.damage}
+        </span>
+      </div>
 
       {slot.energies.length > 0 && (
-        <div className="absolute bottom-1 right-1">
-          <EnergyBadge energies={slot.energies} size="sm" />
-        </div>
+        <EnergyBadge energies={slot.energies} size="sm" />
       )}
     </button>
   );

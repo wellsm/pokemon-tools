@@ -154,11 +154,11 @@ export function FieldSide({ field, side, onCoinFlip }: FieldSideProps) {
 
         {/* Bench + slot controls */}
         <div className="flex flex-col items-end gap-1 relative">
-          <div className="flex gap-1 absolute -top-12">
+          <div className="flex gap-1 absolute -top-8 sm:-top-12">
             <button
               type="button"
               onClick={() => addSlot(side)}
-              className="text-green-400 bg-green-400/10 rounded-md px-4 py-2 text-base hover:bg-green-400/20 transition-colors"
+              className="text-green-400 bg-green-400/10 rounded-md px-2 sm:px-4 py-1 sm:py-2 text-sm hover:bg-green-400/20 transition-colors"
             >
               <PlusIcon className="size-3.5 inline" /> Slot
             </button>
@@ -166,7 +166,7 @@ export function FieldSide({ field, side, onCoinFlip }: FieldSideProps) {
               <button
                 type="button"
                 onClick={() => removeSlot(side, lastBench.id)}
-                className="text-red-400 bg-red-400/10 rounded-md px-4 py-2 text-base hover:bg-red-400/20 transition-colors"
+                className="text-red-400 bg-red-400/10 rounded-md px-2 sm:px-4 py-1 sm:py-2 text-sm sm:text-base hover:bg-red-400/20 transition-colors"
               >
                 <MinusIcon className="size-3.5 inline" /> Slot
               </button>
