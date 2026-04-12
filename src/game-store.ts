@@ -181,18 +181,18 @@ export const useGameStore = create<GameState>()(
       swapSlots: (side, fromId, toId) =>
         set((s) => {
           const field = getField(s, side)
-          const fromSlot = field.slots.find((sl) => sl.id === fromId)
-          const toSlot = field.slots.find((sl) => sl.id === toId)
-          if (!fromSlot || !toSlot) return {}
-          return {
-            [fieldKey(side)]: updateSlots(field, (slots) =>
-              slots.map((sl) => {
-                if (sl.id === fromId) return { ...sl, position: toSlot.position }
-                if (sl.id === toId) return { ...sl, position: fromSlot.position }
-                return sl
-              })
-            ),
-          }
+          const fromIdx = field.slots.findIndex((sl) => sl.id === fromId)
+          const toIdx = field.slots.findIndex((sl) => sl.id === toId)
+          if (fromIdx === -1 || toIdx === -1) return {}
+          const newSlots = [...field.slots]
+          const fromPos = newSlots[fromIdx].position
+          const toPos = newSlots[toIdx].position
+          // Swap position fields (handles active↔bench)
+          newSlots[fromIdx] = { ...newSlots[fromIdx], position: toPos }
+          newSlots[toIdx] = { ...newSlots[toIdx], position: fromPos }
+          // Swap array positions (handles visible ordering)
+          ;[newSlots[fromIdx], newSlots[toIdx]] = [newSlots[toIdx], newSlots[fromIdx]]
+          return { [fieldKey(side)]: { slots: newSlots } }
         }),
     }),
     { name: 'pokedex-tcg-game' }
