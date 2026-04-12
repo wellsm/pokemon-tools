@@ -15,11 +15,47 @@ export interface GameModules {
   board: boolean
 }
 
+// Orientation-based conditions (mutually exclusive)
+export type OrientationCondition = 'confused' | 'paralyzed' | 'asleep' | null
+
+// Marker-based conditions (can stack with orientation + each other)
+export interface MarkerConditions {
+  poisoned: boolean
+  burned: boolean
+}
+
 export interface BoardSlot {
   id: string
   position: 'active' | 'bench'
   damage: number
   energies: EnergyType[]
+  orientation: OrientationCondition
+  markers: MarkerConditions
+}
+
+export const ORIENTATION_LABELS: Record<NonNullable<OrientationCondition>, string> = {
+  confused: 'Confuso',
+  paralyzed: 'Paralisado',
+  asleep: 'Dormindo',
+}
+
+export const ORIENTATION_ROTATION: Record<NonNullable<OrientationCondition>, string> = {
+  confused: 'rotate-180',
+  paralyzed: 'rotate-90',
+  asleep: '-rotate-90',
+}
+
+export const MARKER_LABELS: Record<keyof MarkerConditions, string> = {
+  poisoned: 'Envenenado',
+  burned: 'Queimado',
+}
+
+export const CONDITION_COLORS: Record<string, string> = {
+  confused: '#f59e0b',
+  paralyzed: '#facc15',
+  asleep: '#818cf8',
+  poisoned: '#a855f7',
+  burned: '#ef4444',
 }
 
 export interface FieldSide {

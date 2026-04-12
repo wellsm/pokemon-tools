@@ -3,6 +3,7 @@ import { persist } from 'zustand/middleware'
 import { nanoid } from 'nanoid'
 import type {
   EnergyType, GameFormat, GameModules, BoardSlot, FieldSide,
+  OrientationCondition,
 } from '@/game-data'
 import { FORMAT_DEFAULTS } from '@/game-data'
 
@@ -46,16 +47,23 @@ interface GameState {
   addSlot: (side: Side) => void
   removeSlot: (side: Side, slotId: string) => void
   swapSlots: (side: Side, fromId: string, toId: string) => void
+  setOrientation: (side: Side, slotId: string, condition: OrientationCondition) => void
+  toggleMarker: (side: Side, slotId: string, marker: 'poisoned' | 'burned') => void
+  clearConditions: (side: Side, slotId: string) => void
 }
+
+const defaultMarkers = { poisoned: false, burned: false }
 
 function createSlots(benchSize: number): BoardSlot[] {
   return [
-    { id: nanoid(), position: 'active', damage: 0, energies: [] },
+    { id: nanoid(), position: 'active', damage: 0, energies: [], orientation: null, markers: { ...defaultMarkers } },
     ...Array.from({ length: benchSize }, () => ({
       id: nanoid(),
       position: 'bench' as const,
       damage: 0,
       energies: [],
+      orientation: null as OrientationCondition,
+      markers: { ...defaultMarkers },
     })),
   ]
 }
@@ -213,7 +221,7 @@ export const useGameStore = create<GameState>()(
         set((s) => ({
           [fieldKey(side)]: updateSlots(getField(s, side), (slots) => [
             ...slots,
-            { id: nanoid(), position: 'bench', damage: 0, energies: [] },
+            { id: nanoid(), position: 'bench', damage: 0, energies: [], orientation: null, markers: { ...defaultMarkers } },
           ]),
         })),
 
@@ -242,6 +250,37 @@ export const useGameStore = create<GameState>()(
             history: [...s.history, { id: nanoid(), side, type: 'move' as const, description: desc, timestamp: Date.now() }],
           }
         }),
+
+      setOrientation: (side, slotId, condition) =>
+        set((s) => ({
+          [fieldKey(side)]: updateSlots(getField(s, side), (slots) =>
+            slots.map((sl) =>
+              sl.id === slotId ? { ...sl, orientation: condition } : sl
+            )
+          ),
+        })),
+
+      toggleMarker: (side, slotId, marker) =>
+        set((s) => ({
+          [fieldKey(side)]: updateSlots(getField(s, side), (slots) =>
+            slots.map((sl) =>
+              sl.id === slotId
+                ? { ...sl, markers: { ...sl.markers, [marker]: !sl.markers[marker] } }
+                : sl
+            )
+          ),
+        })),
+
+      clearConditions: (side, slotId) =>
+        set((s) => ({
+          [fieldKey(side)]: updateSlots(getField(s, side), (slots) =>
+            slots.map((sl) =>
+              sl.id === slotId
+                ? { ...sl, orientation: null, markers: { poisoned: false, burned: false } }
+                : sl
+            )
+          ),
+        })),
     }),
     { name: 'pokedex-tcg-game' }
   )

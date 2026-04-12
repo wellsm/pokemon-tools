@@ -107,7 +107,7 @@ export function CoinModal({ open, side, onOpenChange }: CoinModalProps) {
                     }`}
                   style={{ perspective: "600px" }}
                 >
-                  {result == null ? "?" : isHeads ? "C" : "K"}
+                  {result == null ? <img className="rounded-full" src="/images/coin-heads.png" alt="Cara" /> : isHeads ? <img className="rounded-full" src="/images/coin-heads.png" alt="Cara" /> : <img className="rounded-full" src="/images/coin-tails.jpeg" alt="Coroa" />}
                 </div>
               );
             })}

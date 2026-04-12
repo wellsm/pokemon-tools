@@ -1,34 +1,54 @@
-import { createPortal } from 'react-dom'
-import { useGameStore, type Side } from '@/game-store'
-import { ENERGY_TYPES, ENERGY_IMAGE, ENERGY_LABEL, type BoardSlot } from '@/game-data'
-import { EnergyBadge } from '@/components/app/energy-badge'
-import { XIcon } from 'lucide-react'
+import { XIcon } from "lucide-react";
+import { createPortal } from "react-dom";
+import { EnergyBadge } from "@/components/app/energy-badge";
+import {
+  type BoardSlot,
+  ENERGY_IMAGE,
+  ENERGY_LABEL,
+  ENERGY_TYPES,
+  ORIENTATION_LABELS,
+  MARKER_LABELS,
+  CONDITION_COLORS,
+} from "@/game-data";
+import { type Side, useGameStore } from "@/game-store";
 
 interface SlotPopoverProps {
-  slot: BoardSlot
-  side: Side
-  label: string
-  open: boolean
-  onOpenChange: (open: boolean) => void
+  slot: BoardSlot;
+  side: Side;
+  label: string;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
 }
 
-export function SlotPopover({ slot, side, label, open, onOpenChange }: SlotPopoverProps) {
-  const addDamage = useGameStore((s) => s.addDamage)
-  const clearDamage = useGameStore((s) => s.clearDamage)
-  const attachEnergy = useGameStore((s) => s.attachEnergy)
-  const removeOneEnergy = useGameStore((s) => s.removeOneEnergy)
-  const clearEnergies = useGameStore((s) => s.clearEnergies)
+const ORIENTATIONS = ['confused', 'paralyzed', 'asleep'] as const;
+const MARKERS = ['poisoned', 'burned'] as const;
 
-  if (!open) return null
+export function SlotPopover({
+  slot,
+  side,
+  label,
+  open,
+  onOpenChange,
+}: SlotPopoverProps) {
+  const { addDamage, clearDamage, attachEnergy, removeOneEnergy, clearEnergies, setOrientation, toggleMarker, clearConditions } = useGameStore();
+
+  if (!open) return null;
+
+  const hasAnyCondition = slot.orientation !== null || slot.markers.poisoned || slot.markers.burned;
 
   return createPortal(
-    <div className={`fixed inset-0 z-50 flex flex-col ${side === 'a' ? 'justify-start pt-14' : 'justify-end pb-14'}`}>
-      <div
+    <div
+      className={`fixed inset-0 z-50 flex flex-col ${side === "a" ? "justify-start pt-14" : "justify-end pb-14"}`}
+    >
+      <button
+        type="button"
         className="absolute inset-0 bg-black/40 backdrop-blur-[2px]"
         onClick={() => onOpenChange(false)}
       />
 
-      <div className={`relative z-10 mx-auto bg-gray-900/95 border border-gray-700 rounded-2xl p-5 w-[320px] max-w-[90vw] space-y-5 ${side === 'a' ? 'rotate-180' : ''}`}>
+      <div
+        className={`relative z-10 mx-auto bg-gray-900/95 border border-gray-700 rounded-2xl p-5 w-[340px] max-w-[90vw] max-h-[80vh] overflow-y-auto space-y-5 ${side === "a" ? "rotate-180" : ""}`}
+      >
         {/* Header */}
         <div className="flex items-center justify-between">
           <span className="text-white font-bold text-lg">{label}</span>
@@ -43,7 +63,9 @@ export function SlotPopover({ slot, side, label, open, onOpenChange }: SlotPopov
 
         {/* Damage counter */}
         <div>
-          <p className="text-sm text-gray-400 uppercase tracking-wider mb-2">Dano</p>
+          <p className="text-sm text-gray-400 uppercase tracking-wider mb-2">
+            Dano
+          </p>
           <div className="flex items-center justify-center gap-2">
             {[-20, -10].map((amt) => (
               <button
@@ -71,9 +93,60 @@ export function SlotPopover({ slot, side, label, open, onOpenChange }: SlotPopov
           </div>
         </div>
 
+        {/* Conditions */}
+        <div>
+          <p className="text-sm text-gray-400 uppercase tracking-wider mb-2">
+            Condições
+          </p>
+          {/* Orientation conditions (mutually exclusive) */}
+          <div className="flex gap-1.5 mb-2">
+            {ORIENTATIONS.map((cond) => {
+              const active = slot.orientation === cond;
+              return (
+                <button
+                  key={cond}
+                  type="button"
+                  onClick={() => setOrientation(side, slot.id, active ? null : cond)}
+                  className="flex-1 py-2 rounded-lg text-xs font-medium transition-colors border"
+                  style={{
+                    borderColor: active ? CONDITION_COLORS[cond] : '#374151',
+                    backgroundColor: active ? `${CONDITION_COLORS[cond]}20` : '#1f2937',
+                    color: active ? CONDITION_COLORS[cond] : '#9ca3af',
+                  }}
+                >
+                  {ORIENTATION_LABELS[cond]}
+                </button>
+              );
+            })}
+          </div>
+          {/* Marker conditions (toggleable) */}
+          <div className="flex gap-1.5">
+            {MARKERS.map((marker) => {
+              const active = slot.markers[marker];
+              return (
+                <button
+                  key={marker}
+                  type="button"
+                  onClick={() => toggleMarker(side, slot.id, marker)}
+                  className="flex-1 py-2 rounded-lg text-xs font-medium transition-colors border"
+                  style={{
+                    borderColor: active ? CONDITION_COLORS[marker] : '#374151',
+                    backgroundColor: active ? `${CONDITION_COLORS[marker]}20` : '#1f2937',
+                    color: active ? CONDITION_COLORS[marker] : '#9ca3af',
+                  }}
+                >
+                  {MARKER_LABELS[marker]}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
         {/* Attached energies */}
         <div>
-          <p className="text-sm text-gray-400 uppercase tracking-wider mb-2">Energias</p>
+          <p className="text-sm text-gray-400 uppercase tracking-wider mb-2">
+            Energias
+          </p>
           {slot.energies.length > 0 && (
             <div className="mb-3">
               <EnergyBadge
@@ -91,7 +164,11 @@ export function SlotPopover({ slot, side, label, open, onOpenChange }: SlotPopov
                 onClick={() => attachEnergy(side, slot.id, type)}
                 className="w-9 h-9 rounded-lg bg-gray-800 border border-gray-700 p-1 hover:bg-gray-700 transition-colors"
               >
-                <img src={ENERGY_IMAGE[type]} alt={ENERGY_LABEL[type]} className="w-full h-full" />
+                <img
+                  src={ENERGY_IMAGE[type]}
+                  alt={ENERGY_LABEL[type]}
+                  className="w-full h-full"
+                />
               </button>
             ))}
           </div>
@@ -115,9 +192,18 @@ export function SlotPopover({ slot, side, label, open, onOpenChange }: SlotPopov
               Limpar energias
             </button>
           )}
+          {hasAnyCondition && (
+            <button
+              type="button"
+              onClick={() => clearConditions(side, slot.id)}
+              className="flex-1 py-2.5 rounded-xl bg-gray-800 border border-gray-700 text-sm font-medium text-gray-300 hover:bg-gray-700 transition-colors"
+            >
+              Limpar condições
+            </button>
+          )}
         </div>
       </div>
     </div>,
-    document.body
-  )
+    document.body,
+  );
 }
