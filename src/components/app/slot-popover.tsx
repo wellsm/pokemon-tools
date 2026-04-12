@@ -21,7 +21,6 @@ export function SlotPopover({ slot, side, label, open, onOpenChange }: SlotPopov
   const clearDamage = useGameStore((s) => s.clearDamage)
   const attachEnergy = useGameStore((s) => s.attachEnergy)
   const removeEnergy = useGameStore((s) => s.removeEnergy)
-  const swapToActive = useGameStore((s) => s.swapToActive)
 
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
@@ -99,14 +98,6 @@ export function SlotPopover({ slot, side, label, open, onOpenChange }: SlotPopov
             >
               Limpar dano
             </button>
-            {slot.position === 'bench' && (
-              <button
-                onClick={() => { swapToActive(side, slot.id); onOpenChange(false); }}
-                className="flex-1 py-2.5 rounded-xl bg-gray-100 text-sm font-medium text-gray-700 hover:bg-gray-200 transition-colors"
-              >
-                Mover p/ Ativo
-              </button>
-            )}
           </div>
         </div>
       </DrawerContent>

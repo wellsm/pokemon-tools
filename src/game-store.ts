@@ -32,8 +32,7 @@ interface GameState {
   removeEnergy: (side: 'my' | 'opponent', slotId: string, index: number) => void
   addSlot: (side: 'my' | 'opponent') => void
   removeSlot: (side: 'my' | 'opponent', slotId: string) => void
-  swapToActive: (side: 'my' | 'opponent', slotId: string) => void
-  reorderSlots: (side: 'my' | 'opponent', fromIndex: number, toIndex: number) => void
+  swapSlots: (side: 'my' | 'opponent', fromId: string, toId: string) => void
 }
 
 function createSlots(benchSize: number): BoardSlot[] {
@@ -179,25 +178,21 @@ export const useGameStore = create<GameState>()(
           ),
         })),
 
-      swapToActive: (side, slotId) =>
-        set((s) => ({
-          [fieldKey(side)]: updateSlots(getField(s, side), (slots) => {
-            const currentActive = slots.find((sl) => sl.position === 'active')
-            return slots.map((sl) => {
-              if (sl.id === slotId) return { ...sl, position: 'active' }
-              if (sl.id === currentActive?.id) return { ...sl, position: 'bench' }
-              return sl
-            })
-          }),
-        })),
-
-      reorderSlots: (side, fromIndex, toIndex) =>
+      swapSlots: (side, fromId, toId) =>
         set((s) => {
           const field = getField(s, side)
-          const newSlots = [...field.slots]
-          const [moved] = newSlots.splice(fromIndex, 1)
-          newSlots.splice(toIndex, 0, moved)
-          return { [fieldKey(side)]: { slots: newSlots } }
+          const fromSlot = field.slots.find((sl) => sl.id === fromId)
+          const toSlot = field.slots.find((sl) => sl.id === toId)
+          if (!fromSlot || !toSlot) return {}
+          return {
+            [fieldKey(side)]: updateSlots(field, (slots) =>
+              slots.map((sl) => {
+                if (sl.id === fromId) return { ...sl, position: toSlot.position }
+                if (sl.id === toId) return { ...sl, position: fromSlot.position }
+                return sl
+              })
+            ),
+          }
         }),
     }),
     { name: 'pokedex-tcg-game' }
