@@ -60,7 +60,7 @@ export function BoardSlot({
       onTouchStart={onTouchStart}
       onTouchEnd={onTouchEnd}
       className={cn(
-        "flex flex-col items-center justify-center rounded transition-all select-none touch-none cursor-grab active:cursor-grabbing",
+        "flex flex-col items-center justify-center rounded-md transition-all select-none touch-none cursor-grab active:cursor-grabbing",
         isActive
           ? `w-20 sm:w-32 md:w-36 h-28 sm:h-40 md:h-48 border-2 ${borderColor} bg-gray-900`
           : "w-18 sm:w-24 md:w-32 h-26 sm:h-36 md:h-42 border border-gray-700 bg-gray-900",

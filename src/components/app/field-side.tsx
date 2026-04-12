@@ -3,15 +3,16 @@ import { useCallback, useRef, useState } from "react";
 import { BoardSlot } from "@/components/app/board-slot";
 import { SlotPopover } from "@/components/app/slot-popover";
 import type { FieldSide as FieldSideType } from "@/game-data";
-import { useGameStore, type Side } from "@/game-store";
+import { type Side, useGameStore } from "@/game-store";
 import { cn } from "@/lib/utils";
 
 interface FieldSideProps {
   field: FieldSideType;
   side: Side;
+  onCoinFlip?: () => void;
 }
 
-export function FieldSide({ field, side }: FieldSideProps) {
+export function FieldSide({ field, side, onCoinFlip }: FieldSideProps) {
   const addSlot = useGameStore((s) => s.addSlot);
   const removeSlot = useGameStore((s) => s.removeSlot);
   const swapSlots = useGameStore((s) => s.swapSlots);
@@ -126,6 +127,16 @@ export function FieldSide({ field, side }: FieldSideProps) {
     );
   }
 
+  const coinButton = onCoinFlip && (
+    <button
+      type="button"
+      onClick={onCoinFlip}
+      className="w-10 h-10 rounded-full bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-base shadow-lg shadow-amber-500/30 hover:scale-105 active:scale-95 transition-transform"
+    >
+      🪙
+    </button>
+  );
+
   return (
     <div
       className={cn(
@@ -156,19 +167,27 @@ export function FieldSide({ field, side }: FieldSideProps) {
       </div>
 
       {isTop ? (
-        <div className="flex flex-col gap-2 items-center">
+        <div className="flex flex-col gap-4 items-center">
           <div className="grid grid-cols-5 flex-wrap items-center justify-center gap-2">
             {benchSlots.map((slot, i) => renderSlot(slot, `B${i + 1}`))}
           </div>
-          {activeSlot && renderSlot(activeSlot, "Ativo")}
+          {/* Active + coin button row (top side: coin on left, mirrored) */}
+          <div className="flex items-center gap-2">
+            {coinButton}
+            {activeSlot && renderSlot(activeSlot, "Ativo")}
+          </div>
         </div>
       ) : (
-        <>
-          {activeSlot && renderSlot(activeSlot, "Ativo")}
-          <div className="grid grid-cols-5 gap-1 flex-wrap justify-center">
+        <div className="flex flex-col gap-4 items-center">
+          {/* Active + coin button row (bottom side: coin on right) */}
+          <div className="flex items-center gap-2">
+            {activeSlot && renderSlot(activeSlot, "Ativo")}
+            {coinButton}
+          </div>
+          <div className="grid grid-cols-5 gap-2 flex-wrap justify-center">
             {benchSlots.map((slot, i) => renderSlot(slot, `B${i + 1}`))}
           </div>
-        </>
+        </div>
       )}
 
       {selectedSlot && (

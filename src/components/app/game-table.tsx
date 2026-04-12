@@ -46,22 +46,24 @@ export function GameTable() {
       </div>
 
       {/* Field area */}
-      <div className="flex-1 flex flex-col justify-center items-center gap-1 relative overflow-hidden px-2 h-screen">
-        {modules.board && <FieldSide field={fieldA} side="a" />}
-        {modules.board && <FieldSide field={fieldB} side="b" />}
+      <div className="flex-1 flex flex-col justify-center items-center gap-4 relative overflow-hidden px-2 h-screen">
+        {modules.board && (
+          <FieldSide
+            field={fieldA}
+            side="a"
+            onCoinFlip={modules.coins ? () => setCoinOpen(true) : undefined}
+          />
+        )}
+        {modules.board && (
+          <FieldSide
+            field={fieldB}
+            side="b"
+            onCoinFlip={modules.coins ? () => setCoinOpen(true) : undefined}
+          />
+        )}
 
         {modules.energy && <EnergyIndicator side="a" />}
         {modules.energy && <EnergyIndicator side="b" />}
-
-        {modules.coins && (
-          <button
-            type="button"
-            onClick={() => setCoinOpen(true)}
-            className="absolute bottom-16 md:bottom-3 left-3 z-10 w-12 h-12 rounded-full bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-xl shadow-lg shadow-amber-500/30 hover:scale-105 active:scale-95 transition-transform"
-          >
-            🪙
-          </button>
-        )}
       </div>
 
       <CoinModal open={coinOpen} onOpenChange={setCoinOpen} />
