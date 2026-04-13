@@ -1,4 +1,3 @@
-import { ClockIcon } from "lucide-react";
 import { useState } from "react";
 import { createPortal } from "react-dom";
 import { CoinModal } from "@/components/app/coin-modal";
@@ -34,7 +33,7 @@ export function GameTable() {
   return (
     <div className="flex-1 bg-background flex flex-col">
       {/* Field area */}
-      <div className="flex-1 flex flex-col justify-center items-center gap-0 relative overflow-hidden px-2">
+      <div className="flex-1 flex flex-col justify-center items-center gap-4 relative overflow-hidden px-2">
         {modules.board && (
           <div className="rotate-180 flex-1 flex items-start justify-center">
             <FieldSide
@@ -42,45 +41,19 @@ export function GameTable() {
               side="a"
               onCoinFlip={modules.coins ? () => openCoin("a") : undefined}
               onEndGame={() => { setEndSide("a"); setShowEndConfirm(true); }}
+              onHistory={() => toggleHistory("a")}
+              historyActive={historyOpen && historySide === "a"}
             />
           </div>
         )}
-
-        {/* Center divider with history buttons */}
-        <div className="flex items-center gap-3 py-1 z-10">
-          <button
-            type="button"
-            onClick={() => toggleHistory("a")}
-            className={`rotate-180 w-8 h-8 rounded-full flex items-center justify-center transition-all ${
-              historyOpen && historySide === "a"
-                ? "bg-blue-500/30 text-blue-400 border border-blue-400"
-                : "bg-gray-800/80 text-gray-500 border border-gray-700 hover:text-gray-300"
-            }`}
-          >
-            <ClockIcon className="size-3.5" />
-          </button>
-
-          <div className="w-8 h-px bg-gray-700" />
-
-          <button
-            type="button"
-            onClick={() => toggleHistory("b")}
-            className={`w-8 h-8 rounded-full flex items-center justify-center transition-all ${
-              historyOpen && historySide === "b"
-                ? "bg-red-500/30 text-red-400 border border-red-400"
-                : "bg-gray-800/80 text-gray-500 border border-gray-700 hover:text-gray-300"
-            }`}
-          >
-            <ClockIcon className="size-3.5" />
-          </button>
-        </div>
-
         {modules.board && (
           <FieldSide
             field={fieldB}
             side="b"
             onCoinFlip={modules.coins ? () => openCoin("b") : undefined}
             onEndGame={() => { setEndSide("b"); setShowEndConfirm(true); }}
+            onHistory={() => toggleHistory("b")}
+            historyActive={historyOpen && historySide === "b"}
           />
         )}
 

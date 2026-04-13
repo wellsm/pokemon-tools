@@ -1,4 +1,4 @@
-import { MinusIcon, PlusIcon } from "lucide-react";
+import { ClockIcon, MinusIcon, PlusIcon } from "lucide-react";
 import { useCallback, useRef, useState } from "react";
 import { BoardSlot } from "@/components/app/board-slot";
 import { SlotPopover } from "@/components/app/slot-popover";
@@ -14,6 +14,8 @@ interface FieldSideProps {
   side: Side;
   onCoinFlip?: () => void;
   onEndGame?: () => void;
+  onHistory?: () => void;
+  historyActive?: boolean;
 }
 
 export function FieldSide({
@@ -21,6 +23,8 @@ export function FieldSide({
   side,
   onCoinFlip,
   onEndGame,
+  onHistory,
+  historyActive,
 }: FieldSideProps) {
   const addSlot = useGameStore((s) => s.addSlot);
   const removeSlot = useGameStore((s) => s.removeSlot);
@@ -150,6 +154,20 @@ export function FieldSide({
     </button>
   );
 
+  const historyButton = onHistory && (
+    <button
+      type="button"
+      onClick={onHistory}
+      className={`w-10 h-10 rounded-full flex items-center justify-center transition-all ${
+        historyActive
+          ? "bg-gray-600/50 text-white border border-gray-500"
+          : "bg-gray-700/50 border border-gray-600 text-gray-400 hover:bg-gray-700"
+      }`}
+    >
+      <ClockIcon className="size-4" />
+    </button>
+  );
+
   const endButton = onEndGame && (
     <button
       type="button"
@@ -174,11 +192,10 @@ export function FieldSide({
               {coinButton}
             </div>
           )}
-          {endButton && (
-            <div className="absolute top-1/2 -translate-y-1/2 -left-14">
-              {endButton}
-            </div>
-          )}
+          <div className="absolute top-1/2 -translate-y-1/2 -left-14 flex flex-col gap-1.5">
+            {historyButton}
+            {endButton}
+          </div>
         </div>
 
         {/* Bench + slot controls */}
