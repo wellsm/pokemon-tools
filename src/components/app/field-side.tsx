@@ -1,8 +1,12 @@
-import { MinusIcon, PlusIcon } from "lucide-react";
+import { ClockIcon, MinusIcon, PlusIcon } from "lucide-react";
 import { useCallback, useRef, useState } from "react";
 import { BoardSlot } from "@/components/app/board-slot";
+import { GameHistory } from "@/components/app/game-history";
 import { SlotPopover } from "@/components/app/slot-popover";
-import type { FieldSide as FieldSideType, BoardSlot as BoardSlotType } from "@/game-data";
+import type {
+  BoardSlot as BoardSlotType,
+  FieldSide as FieldSideType,
+} from "@/game-data";
 import { ENERGY_LABEL } from "@/game-data";
 import { type Side, useGameStore } from "@/game-store";
 
@@ -13,13 +17,19 @@ interface FieldSideProps {
   onEndGame?: () => void;
 }
 
-export function FieldSide({ field, side, onCoinFlip, onEndGame }: FieldSideProps) {
+export function FieldSide({
+  field,
+  side,
+  onCoinFlip,
+  onEndGame,
+}: FieldSideProps) {
   const addSlot = useGameStore((s) => s.addSlot);
   const removeSlot = useGameStore((s) => s.removeSlot);
   const swapSlots = useGameStore((s) => s.swapSlots);
   const logAction = useGameStore((s) => s.logAction);
 
   const [selectedSlotId, setSelectedSlotId] = useState<string | null>(null);
+  const [historyOpen, setHistoryOpen] = useState(false);
   const slotSnapshot = useRef<BoardSlotType | null>(null);
   const [dragFromId, setDragFromId] = useState<string | null>(null);
   const [dragOverId, setDragOverId] = useState<string | null>(null);
@@ -138,7 +148,17 @@ export function FieldSide({ field, side, onCoinFlip, onEndGame }: FieldSideProps
       onClick={onCoinFlip}
       className="w-10 h-10 rounded-full bg-linear-to-br from-amber-400 to-amber-600 flex items-center justify-center text-base shadow-lg shadow-amber-500/30 hover:scale-105 active:scale-95 transition-transform"
     >
-      🪙
+      <img src="/images/coin-heads.png" alt="Coin Heads" className="w-full h-full" />
+    </button>
+  );
+
+  const historyButton = (
+    <button
+      type="button"
+      onClick={() => setHistoryOpen(true)}
+      className="w-10 h-10 rounded-full bg-gray-700/50 border border-gray-600 flex items-center justify-center text-gray-400 hover:bg-gray-700 active:scale-95 transition-all"
+    >
+      <ClockIcon className="size-4" />
     </button>
   );
 
@@ -166,11 +186,10 @@ export function FieldSide({ field, side, onCoinFlip, onEndGame }: FieldSideProps
               {coinButton}
             </div>
           )}
-          {endButton && (
-            <div className="absolute top-1/2 -translate-y-1/2 -left-16">
-              {endButton}
-            </div>
-          )}
+          <div className="absolute top-1/2 -translate-y-1/2 -left-14 flex flex-col gap-1.5">
+            {endButton}
+            {historyButton}
+          </div>
         </div>
 
         {/* Bench + slot controls */}
@@ -213,12 +232,23 @@ export function FieldSide({ field, side, onCoinFlip, onEndGame }: FieldSideProps
               if (snap && current) {
                 const damageDiff = current.damage - snap.damage;
                 if (damageDiff !== 0) {
-                  logAction(side, 'damage', `${damageDiff > 0 ? '+' : ''}${damageDiff} dano → ${current.damage}`);
+                  logAction(
+                    side,
+                    "damage",
+                    `${damageDiff > 0 ? "+" : ""}${damageDiff} dano → ${current.damage}`,
+                  );
                 }
-                const addedEnergies = current.energies.length - snap.energies.length;
+                const addedEnergies =
+                  current.energies.length - snap.energies.length;
                 if (addedEnergies !== 0) {
-                  const energyNames = current.energies.map((e) => ENERGY_LABEL[e]).join(', ');
-                  logAction(side, 'energy', `${addedEnergies > 0 ? '+' : ''}${addedEnergies} energia (${energyNames || 'nenhuma'})`);
+                  const energyNames = current.energies
+                    .map((e) => ENERGY_LABEL[e])
+                    .join(", ");
+                  logAction(
+                    side,
+                    "energy",
+                    `${addedEnergies > 0 ? "+" : ""}${addedEnergies} energia (${energyNames || "nenhuma"})`,
+                  );
                 }
               }
               slotSnapshot.current = null;
@@ -227,6 +257,8 @@ export function FieldSide({ field, side, onCoinFlip, onEndGame }: FieldSideProps
           }}
         />
       )}
+
+      <GameHistory open={historyOpen} side={side} onOpenChange={setHistoryOpen} />
     </div>
   );
 }

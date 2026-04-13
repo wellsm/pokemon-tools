@@ -42,6 +42,7 @@ export function BoardSlot({
 
   const markers = slot.markers ?? { poisoned: false, burned: false };
   const hasMarkers = markers.poisoned || markers.burned;
+  const abilityUsed = slot.abilityUsed ?? false;
 
   return (
     <div className="relative">
@@ -73,6 +74,7 @@ export function BoardSlot({
             : "border border-gray-700",
           isDragOver ? "ring-2 ring-amber-400 scale-105" : "",
           isDragging ? "opacity-40 scale-95" : "",
+          abilityUsed ? "ring-2 ring-cyan-400 shadow-[0_0_12px_rgba(34,211,238,0.4)]" : "",
           orientationClass,
         )}
       >

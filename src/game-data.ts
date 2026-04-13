@@ -31,6 +31,7 @@ export interface BoardSlot {
   energies: EnergyType[]
   orientation: OrientationCondition
   markers: MarkerConditions
+  abilityUsed: boolean
 }
 
 export const ORIENTATION_LABELS: Record<NonNullable<OrientationCondition>, string> = {

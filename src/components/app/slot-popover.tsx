@@ -30,7 +30,7 @@ export function SlotPopover({
   open,
   onOpenChange,
 }: SlotPopoverProps) {
-  const { addDamage, clearDamage, attachEnergy, removeOneEnergy, clearEnergies, setOrientation, toggleMarker, clearConditions } = useGameStore();
+  const { addDamage, clearDamage, attachEnergy, removeOneEnergy, clearEnergies, setOrientation, toggleMarker, clearConditions, toggleAbility } = useGameStore();
 
   if (!open) return null;
 
@@ -174,8 +174,21 @@ export function SlotPopover({
           </div>
         </div>
 
+        {/* Ability toggle — activates and closes modal */}
+        <button
+          type="button"
+          onClick={() => { toggleAbility(side, slot.id); onOpenChange(false); }}
+          className={`w-full py-2.5 rounded-xl text-sm font-medium transition-colors border ${
+            slot.abilityUsed
+              ? 'border-cyan-400 bg-cyan-400/20 text-cyan-400'
+              : 'border-gray-700 bg-gray-800 text-gray-300 hover:bg-gray-700'
+          }`}
+        >
+          {slot.abilityUsed ? 'Desativar Habilidade' : 'Usar Habilidade'}
+        </button>
+
         {/* Actions */}
-        <div className="flex gap-2">
+        <div className="flex gap-2 flex-wrap">
           <button
             type="button"
             onClick={() => clearDamage(side, slot.id)}

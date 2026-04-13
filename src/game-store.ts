@@ -50,21 +50,19 @@ interface GameState {
   setOrientation: (side: Side, slotId: string, condition: OrientationCondition) => void
   toggleMarker: (side: Side, slotId: string, marker: 'poisoned' | 'burned') => void
   clearConditions: (side: Side, slotId: string) => void
+  toggleAbility: (side: Side, slotId: string) => void
 }
 
 const defaultMarkers = { poisoned: false, burned: false }
 
+function newSlot(position: 'active' | 'bench'): BoardSlot {
+  return { id: nanoid(), position, damage: 0, energies: [], orientation: null, markers: { ...defaultMarkers }, abilityUsed: false }
+}
+
 function createSlots(benchSize: number): BoardSlot[] {
   return [
-    { id: nanoid(), position: 'active', damage: 0, energies: [], orientation: null, markers: { ...defaultMarkers } },
-    ...Array.from({ length: benchSize }, () => ({
-      id: nanoid(),
-      position: 'bench' as const,
-      damage: 0,
-      energies: [],
-      orientation: null as OrientationCondition,
-      markers: { ...defaultMarkers },
-    })),
+    newSlot('active'),
+    ...Array.from({ length: benchSize }, () => newSlot('bench')),
   ]
 }
 
@@ -221,7 +219,7 @@ export const useGameStore = create<GameState>()(
         set((s) => ({
           [fieldKey(side)]: updateSlots(getField(s, side), (slots) => [
             ...slots,
-            { id: nanoid(), position: 'bench', damage: 0, energies: [], orientation: null, markers: { ...defaultMarkers } },
+            newSlot('bench'),
           ]),
         })),
 
@@ -291,6 +289,15 @@ export const useGameStore = create<GameState>()(
             )
           ),
         })),
+
+      toggleAbility: (side, slotId) =>
+        set((s) => ({
+          [fieldKey(side)]: updateSlots(getField(s, side), (slots) =>
+            slots.map((sl) =>
+              sl.id === slotId ? { ...sl, abilityUsed: !sl.abilityUsed } : sl
+            )
+          ),
+        })),
     }),
     {
       name: 'pokedex-tcg-game',
@@ -303,6 +310,7 @@ export const useGameStore = create<GameState>()(
               ...sl,
               orientation: sl.orientation ?? null,
               markers: sl.markers ?? { poisoned: false, burned: false },
+              abilityUsed: sl.abilityUsed ?? false,
             })),
           }
         }
