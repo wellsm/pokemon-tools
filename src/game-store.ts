@@ -282,7 +282,25 @@ export const useGameStore = create<GameState>()(
           ),
         })),
     }),
-    { name: 'pokedex-tcg-game' }
+    {
+      name: 'pokedex-tcg-game',
+      merge: (persisted, current) => {
+        const state = { ...current, ...(persisted as Partial<GameState>) }
+        // Migrate slots that lack orientation/markers fields
+        function migrateSlots(field: FieldSide): FieldSide {
+          return {
+            slots: field.slots.map((sl) => ({
+              ...sl,
+              orientation: sl.orientation ?? null,
+              markers: sl.markers ?? { poisoned: false, burned: false },
+            })),
+          }
+        }
+        if (state.fieldA.slots.length) state.fieldA = migrateSlots(state.fieldA)
+        if (state.fieldB.slots.length) state.fieldB = migrateSlots(state.fieldB)
+        return state
+      },
+    }
   )
 )
 

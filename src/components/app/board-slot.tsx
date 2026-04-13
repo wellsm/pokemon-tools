@@ -42,7 +42,8 @@ export function BoardSlot({
     ? ORIENTATION_ROTATION[slot.orientation]
     : "";
 
-  const hasMarkers = slot.markers.poisoned || slot.markers.burned;
+  const markers = slot.markers ?? { poisoned: false, burned: false };
+  const hasMarkers = markers.poisoned || markers.burned;
 
   return (
     <div className="relative">
@@ -107,7 +108,7 @@ export function BoardSlot({
       {/* Condition markers — positioned outside the rotated card */}
       {hasMarkers && (
         <div className="absolute -top-1 -right-1 flex gap-0.5">
-          {slot.markers.poisoned && (
+          {markers.poisoned && (
             <div
               className="w-4 h-4 sm:w-5 sm:h-5 rounded-full flex items-center justify-center text-[8px] sm:text-[10px] font-bold text-white"
               style={{ backgroundColor: CONDITION_COLORS.poisoned }}
@@ -116,7 +117,7 @@ export function BoardSlot({
               ☠
             </div>
           )}
-          {slot.markers.burned && (
+          {markers.burned && (
             <div
               className="w-4 h-4 sm:w-5 sm:h-5 rounded-full flex items-center justify-center text-[8px] sm:text-[10px] font-bold text-white"
               style={{ backgroundColor: CONDITION_COLORS.burned }}
