@@ -19,7 +19,7 @@ export function GameTable() {
   }
 
   return (
-    <div className="flex-1 bg-gray-950 flex flex-col">
+    <div className="flex-1 bg-background flex flex-col">
       {/* Field area */}
       <div className="flex-1 flex flex-col justify-center items-center gap-4 relative overflow-hidden px-2">
         {modules.board && (

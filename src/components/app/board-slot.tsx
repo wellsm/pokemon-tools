@@ -1,12 +1,12 @@
+import { Flame, Skull } from "lucide-react";
 import { EnergyBadge } from "@/components/app/energy-badge";
 import type { BoardSlot as BoardSlotType } from "@/game-data";
-import { ORIENTATION_ROTATION, CONDITION_COLORS } from "@/game-data";
+import { CONDITION_COLORS, ORIENTATION_ROTATION } from "@/game-data";
 import type { Side } from "@/game-store";
 import { cn } from "@/lib/utils";
 
 interface BoardSlotProps {
   slot: BoardSlotType;
-  label: string;
   variant: Side;
   onClick: () => void;
   isDragOver?: boolean;
@@ -21,7 +21,6 @@ interface BoardSlotProps {
 
 export function BoardSlot({
   slot,
-  label,
   variant,
   onClick,
   isDragOver,
@@ -35,7 +34,6 @@ export function BoardSlot({
 }: BoardSlotProps) {
   const isActive = slot.position === "active";
   const borderColor = variant === "a" ? "border-blue-400" : "border-red-400";
-  const labelColor = variant === "a" ? "text-blue-400" : "text-red-400";
   const damageColor = slot.damage > 0 ? "text-amber-400" : "text-gray-500";
 
   const orientationClass = slot.orientation
@@ -69,10 +67,10 @@ export function BoardSlot({
         onTouchStart={onTouchStart}
         onTouchEnd={onTouchEnd}
         className={cn(
-          "relative flex flex-col items-center justify-between rounded-md transition-all select-none touch-none cursor-grab active:cursor-grabbing w-18 sm:w-24 md:w-32 h-26 sm:h-36 md:h-42 py-1",
+          "relative flex flex-col items-center justify-between rounded-md transition-all select-none touch-none cursor-grab active:cursor-grabbing w-18 sm:w-24 md:w-32 h-26 sm:h-36 md:h-42 py-1 bg-card",
           isActive
-            ? `border-2 ${borderColor} bg-gray-900`
-            : "border border-gray-700 bg-gray-900",
+            ? `border-2 ${borderColor}`
+            : "border border-gray-700",
           isDragOver ? "ring-2 ring-amber-400 scale-105" : "",
           isDragging ? "opacity-40 scale-95" : "",
           orientationClass,
@@ -81,17 +79,7 @@ export function BoardSlot({
         <div className="flex flex-col">
           <span
             className={cn(
-              "leading-none",
-              isActive
-                ? `text-xs sm:text-sm ${labelColor}`
-                : "text-[10px] sm:text-xs text-gray-500",
-            )}
-          >
-            {label}
-          </span>
-          <span
-            className={cn(
-              "font-bold mt-0.5",
+              "font-bold mt-2",
               damageColor,
               isActive ? "text-xl sm:text-2xl" : "text-base sm:text-lg",
             )}
@@ -107,23 +95,23 @@ export function BoardSlot({
 
       {/* Condition markers — positioned outside the rotated card */}
       {hasMarkers && (
-        <div className="absolute -top-1 -right-1 flex gap-0.5">
+        <div className="absolute -top-2 -right-2 flex gap-0.5">
           {markers.poisoned && (
             <div
-              className="w-4 h-4 sm:w-5 sm:h-5 rounded-full flex items-center justify-center text-[8px] sm:text-[10px] font-bold text-white"
+              className="size-5 sm:size-7 rounded-full flex items-center justify-center text-[8px] sm:text-[10px] font-bold text-white"
               style={{ backgroundColor: CONDITION_COLORS.poisoned }}
               title="Envenenado"
             >
-              ☠
+              <Skull className="size-4" />
             </div>
           )}
           {markers.burned && (
             <div
-              className="w-4 h-4 sm:w-5 sm:h-5 rounded-full flex items-center justify-center text-[8px] sm:text-[10px] font-bold text-white"
+              className="size-5 sm:size-7 rounded-full flex items-center justify-center text-[8px] sm:text-[10px] font-bold text-white"
               style={{ backgroundColor: CONDITION_COLORS.burned }}
               title="Queimado"
             >
-              🔥
+              <Flame className="size-4" />
             </div>
           )}
         </div>

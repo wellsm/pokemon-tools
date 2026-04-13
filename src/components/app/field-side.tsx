@@ -101,12 +101,11 @@ export function FieldSide({ field, side, onCoinFlip, onEndGame }: FieldSideProps
   const selectedSlot = field.slots.find((s) => s.id === selectedSlotId);
   const lastBench = benchSlots[benchSlots.length - 1];
 
-  function renderSlot(slot: (typeof field.slots)[number], slotLabel: string) {
+  function renderSlot(slot: (typeof field.slots)[number]) {
     return (
       <BoardSlot
         key={slot.id}
         slot={slot}
-        label={slotLabel}
         variant={side}
         onClick={() => {
           if (!isDraggingTouch.current) {
@@ -161,14 +160,14 @@ export function FieldSide({ field, side, onCoinFlip, onEndGame }: FieldSideProps
       <div className="flex flex-col gap-4 items-center">
         {/* Active + coin button + end button */}
         <div className="relative">
-          {activeSlot && renderSlot(activeSlot, "Ativo")}
+          {activeSlot && renderSlot(activeSlot)}
           {coinButton && (
-            <div className="absolute top-1/2 -translate-y-1/2 -right-12">
+            <div className="absolute top-1/2 -translate-y-1/2 -right-16">
               {coinButton}
             </div>
           )}
           {endButton && (
-            <div className="absolute top-1/2 -translate-y-1/2 -left-12">
+            <div className="absolute top-1/2 -translate-y-1/2 -left-16">
               {endButton}
             </div>
           )}
@@ -195,7 +194,7 @@ export function FieldSide({ field, side, onCoinFlip, onEndGame }: FieldSideProps
             )}
           </div>
           <div className="grid grid-cols-5 gap-2 justify-center">
-            {benchSlots.map((slot, i) => renderSlot(slot, `B${i + 1}`))}
+            {benchSlots.map((slot) => renderSlot(slot))}
           </div>
         </div>
       </div>

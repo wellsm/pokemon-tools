@@ -93,8 +93,8 @@ export function SlotPopover({
           </div>
         </div>
 
-        {/* Conditions */}
-        <div>
+        {/* Conditions — only for active slot */}
+        {slot.position === 'active' && <div>
           <p className="text-sm text-gray-400 uppercase tracking-wider mb-2">
             Condições
           </p>
@@ -140,7 +140,7 @@ export function SlotPopover({
               );
             })}
           </div>
-        </div>
+        </div>}
 
         {/* Attached energies */}
         <div>

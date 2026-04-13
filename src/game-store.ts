@@ -241,8 +241,18 @@ export const useGameStore = create<GameState>()(
           const newSlots = [...field.slots]
           const fromPos = newSlots[fromIdx].position
           const toPos = newSlots[toIdx].position
-          newSlots[fromIdx] = { ...newSlots[fromIdx], position: toPos }
-          newSlots[toIdx] = { ...newSlots[toIdx], position: fromPos }
+          // Clear conditions when moving to bench (TCG rule)
+          const clearConds = { orientation: null as OrientationCondition, markers: { ...defaultMarkers } }
+          newSlots[fromIdx] = {
+            ...newSlots[fromIdx],
+            position: toPos,
+            ...(toPos === 'bench' ? clearConds : {}),
+          }
+          newSlots[toIdx] = {
+            ...newSlots[toIdx],
+            position: fromPos,
+            ...(fromPos === 'bench' ? clearConds : {}),
+          }
           ;[newSlots[fromIdx], newSlots[toIdx]] = [newSlots[toIdx], newSlots[fromIdx]]
           const desc = `${fromPos} ↔ ${toPos}`
           return {
