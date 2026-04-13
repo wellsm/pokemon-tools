@@ -45,7 +45,7 @@ export function CoinModal({ open, side, onOpenChange }: CoinModalProps) {
       >
         {/* Header */}
         <div className="flex items-center justify-between">
-          <span className="text-white font-bold text-lg">🪙 Moedas</span>
+          <span className="text-white font-bold text-lg">🪙 Coins</span>
           <div className="flex items-center gap-2">
             {results && (
               <button
@@ -69,7 +69,7 @@ export function CoinModal({ open, side, onOpenChange }: CoinModalProps) {
 
         {/* Quantity selector */}
         <div className="flex items-center justify-center gap-4">
-          <span className="text-sm text-gray-400">Quantidade:</span>
+          <span className="text-sm text-gray-400">Quantity:</span>
           <button
             type="button"
             onClick={() => setCount((c) => Math.max(1, c - 1))}
@@ -107,7 +107,7 @@ export function CoinModal({ open, side, onOpenChange }: CoinModalProps) {
                     }`}
                   style={{ perspective: "600px" }}
                 >
-                  {result == null ? <img className="rounded-full" src="/images/coin-heads.png" alt="Cara" /> : isHeads ? <img className="rounded-full" src="/images/coin-heads.png" alt="Cara" /> : <img className="rounded-full" src="/images/coin-tails.jpeg" alt="Coroa" />}
+                  {result == null ? <img className="rounded-full" src="/images/coin-heads.png" alt="Heads" /> : isHeads ? <img className="rounded-full" src="/images/coin-heads.png" alt="Heads" /> : <img className="rounded-full" src="/images/coin-tails.jpeg" alt="Tails" />}
                 </div>
               );
             })}
@@ -117,9 +117,9 @@ export function CoinModal({ open, side, onOpenChange }: CoinModalProps) {
         {/* Results summary */}
         {results && (
           <div className="text-center text-base bg-gray-800/80 rounded-xl py-2.5 px-4">
-            <span className="text-green-400 font-semibold">{heads} Cara</span>
+            <span className="text-green-400 font-semibold">{heads} Heads</span>
             {" · "}
-            <span className="text-red-400 font-semibold">{tails} Coroa</span>
+            <span className="text-red-400 font-semibold">{tails} Tails</span>
           </div>
         )}
 
@@ -130,7 +130,7 @@ export function CoinModal({ open, side, onOpenChange }: CoinModalProps) {
           disabled={flipping}
           className="w-full py-3 rounded-xl bg-amber-500 text-black font-bold text-base hover:bg-amber-400 transition-colors active:scale-[0.98] disabled:opacity-50"
         >
-          {results ? "Jogar Novamente" : "Jogar!"}
+          {results ? "Flip Again" : "Flip!"}
         </button>
       </div>
     </div>

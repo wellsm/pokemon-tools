@@ -64,7 +64,7 @@ export function SlotPopover({
         {/* Damage counter */}
         <div>
           <p className="text-sm text-gray-400 uppercase tracking-wider mb-2">
-            Dano
+            Damage
           </p>
           <div className="flex items-center justify-center gap-2">
             {[-20, -10].map((amt) => (
@@ -96,7 +96,7 @@ export function SlotPopover({
         {/* Conditions — only for active slot */}
         {slot.position === 'active' && <div>
           <p className="text-sm text-gray-400 uppercase tracking-wider mb-2">
-            Condições
+            Conditions
           </p>
           {/* Orientation conditions (mutually exclusive) */}
           <div className="flex gap-1.5 mb-2">
@@ -145,7 +145,7 @@ export function SlotPopover({
         {/* Attached energies */}
         <div>
           <p className="text-sm text-gray-400 uppercase tracking-wider mb-2">
-            Energias
+            Energies
           </p>
           {slot.energies.length > 0 && (
             <div className="mb-3">
@@ -184,7 +184,7 @@ export function SlotPopover({
               : 'border-gray-700 bg-gray-800 text-gray-300 hover:bg-gray-700'
           }`}
         >
-          {slot.abilityUsed ? 'Desativar Habilidade' : 'Usar Habilidade'}
+          {slot.abilityUsed ? 'Deactivate Ability' : 'Use Ability'}
         </button>
 
         {/* Actions */}
@@ -194,7 +194,7 @@ export function SlotPopover({
             onClick={() => clearDamage(side, slot.id)}
             className="flex-1 py-2.5 rounded-xl bg-gray-800 border border-gray-700 text-sm font-medium text-gray-300 hover:bg-gray-700 transition-colors"
           >
-            Limpar dano
+            Clear damage
           </button>
           {slot.energies.length > 0 && (
             <button
@@ -202,7 +202,7 @@ export function SlotPopover({
               onClick={() => clearEnergies(side, slot.id)}
               className="flex-1 py-2.5 rounded-xl bg-gray-800 border border-gray-700 text-sm font-medium text-gray-300 hover:bg-gray-700 transition-colors"
             >
-              Limpar energias
+              Clear energies
             </button>
           )}
           {hasAnyCondition && (
@@ -211,7 +211,7 @@ export function SlotPopover({
               onClick={() => clearConditions(side, slot.id)}
               className="flex-1 py-2.5 rounded-xl bg-gray-800 border border-gray-700 text-sm font-medium text-gray-300 hover:bg-gray-700 transition-colors"
             >
-              Limpar condições
+              Clear conditions
             </button>
           )}
         </div>

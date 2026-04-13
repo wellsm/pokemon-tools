@@ -13,13 +13,9 @@ export function GameTable() {
   const [coinSide, setCoinSide] = useState<Side>("b");
   const [showEndConfirm, setShowEndConfirm] = useState(false);
   const [endSide, setEndSide] = useState<Side>("b");
+
   const [historySide, setHistorySide] = useState<Side>("b");
   const [historyOpen, setHistoryOpen] = useState(false);
-
-  function openCoin(side: Side) {
-    setCoinSide(side);
-    setCoinOpen(true);
-  }
 
   function toggleHistory(side: Side) {
     if (historyOpen && historySide === side) {
@@ -28,6 +24,11 @@ export function GameTable() {
       setHistorySide(side);
       setHistoryOpen(true);
     }
+  }
+
+  function openCoin(side: Side) {
+    setCoinSide(side);
+    setCoinOpen(true);
   }
 
   return (
@@ -77,9 +78,9 @@ export function GameTable() {
       {showEndConfirm && createPortal(
         <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4">
           <div className={`bg-gray-900 border border-gray-700 rounded-2xl p-6 max-w-xs w-full text-center space-y-4 ${endSide === 'a' ? 'rotate-180' : ''}`}>
-            <p className="font-bold text-white text-lg">Encerrar partida?</p>
+            <p className="font-bold text-white text-lg">End game?</p>
             <p className="text-sm text-gray-400">
-              Todo o progresso será perdido.
+              All progress will be lost.
             </p>
             <div className="flex gap-2">
               <button
@@ -87,14 +88,14 @@ export function GameTable() {
                 onClick={() => setShowEndConfirm(false)}
                 className="flex-1 py-2.5 rounded-xl bg-gray-800 border border-gray-700 text-sm font-medium text-gray-300 hover:bg-gray-700 transition-colors"
               >
-                Cancelar
+                Cancel
               </button>
               <button
                 type="button"
                 onClick={endGame}
                 className="flex-1 py-2.5 rounded-xl bg-red-500 text-white text-sm font-medium hover:bg-red-600 transition-colors"
               >
-                Encerrar
+                End
               </button>
             </div>
           </div>

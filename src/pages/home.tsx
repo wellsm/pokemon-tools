@@ -32,17 +32,17 @@ export function Home() {
         const parsed = JSON.parse(reader.result as string)
         const valid = validateImport(parsed)
         if (!valid) {
-          setImportError('Arquivo inválido. Verifique se é um backup do Pokédex TCG.')
+          setImportError("Invalid file. Make sure it's a Pokédex TCG backup.")
           return
         }
         const mode = folders.length > 0
-          ? confirm('Deseja SUBSTITUIR todos os fichários existentes?\n\nOK = Substituir\nCancelar = Mesclar (adicionar sem apagar)')
+          ? confirm('Do you want to REPLACE all existing binders?\n\nOK = Replace\nCancel = Merge (add without deleting)')
             ? 'replace' as const
             : 'merge' as const
           : 'replace' as const
         importFolders(valid, mode)
       } catch {
-        setImportError('Erro ao ler o arquivo. Verifique se é um JSON válido.')
+        setImportError("Error reading file. Make sure it's valid JSON.")
       }
     }
     reader.readAsText(file)
@@ -55,7 +55,7 @@ export function Home() {
         <div className="max-w-2xl mx-auto flex items-center justify-between">
           <div>
             <h1 className="font-black text-xl text-white leading-tight">Pokédex TCG</h1>
-            <p className="text-xs text-white/70">{folders.length} fichário{folders.length !== 1 ? 's' : ''}</p>
+            <p className="text-xs text-white/70">{folders.length} binder{folders.length !== 1 ? 's' : ''}</p>
           </div>
           <div className="flex items-center gap-2">
             <div className="relative" ref={menuRef}>
@@ -73,14 +73,14 @@ export function Home() {
                     className="flex items-center gap-2 w-full px-3 py-2.5 text-sm text-foreground hover:bg-muted transition-colors"
                   >
                     <DownloadIcon className="size-4" />
-                    Exportar dados
+                    Export data
                   </button>
                   <button
                     onClick={() => { fileRef.current?.click(); setMenuOpen(false) }}
                     className="flex items-center gap-2 w-full px-3 py-2.5 text-sm text-foreground hover:bg-muted transition-colors"
                   >
                     <UploadIcon className="size-4" />
-                    Importar dados
+                    Import data
                   </button>
                 </div>
               )}
@@ -89,7 +89,7 @@ export function Home() {
               onClick={() => setCreateOpen(true)}
               className="flex items-center gap-1.5 bg-white text-primary text-sm font-bold px-4 py-2.5 rounded-2xl hover:bg-white/90 transition-colors active:scale-95"
             >
-              <span className="text-base leading-none">+</span> Novo
+              <span className="text-base leading-none">+</span> New
             </button>
           </div>
         </div>
@@ -109,13 +109,13 @@ export function Home() {
         {folders.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-24 text-center">
             <div className="text-6xl mb-4 select-none">📒</div>
-            <p className="font-bold text-gray-700 text-lg">Nenhum fichário ainda</p>
-            <p className="text-gray-400 text-sm mt-1 mb-6">Crie um para começar a colecionar</p>
+            <p className="font-bold text-gray-700 text-lg">No binders yet</p>
+            <p className="text-gray-400 text-sm mt-1 mb-6">Create one to start collecting</p>
             <button
               onClick={() => setCreateOpen(true)}
               className="bg-primary text-primary-foreground font-bold px-6 py-3 rounded-2xl hover:bg-primary/90 transition-colors"
             >
-              Criar primeiro fichário
+              Create first binder
             </button>
           </div>
         ) : (

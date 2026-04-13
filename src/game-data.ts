@@ -35,9 +35,9 @@ export interface BoardSlot {
 }
 
 export const ORIENTATION_LABELS: Record<NonNullable<OrientationCondition>, string> = {
-  confused: 'Confuso',
-  paralyzed: 'Paralisado',
-  asleep: 'Dormindo',
+  confused: 'Confused',
+  paralyzed: 'Paralyzed',
+  asleep: 'Asleep',
 }
 
 export const ORIENTATION_ROTATION: Record<NonNullable<OrientationCondition>, string> = {
@@ -47,8 +47,8 @@ export const ORIENTATION_ROTATION: Record<NonNullable<OrientationCondition>, str
 }
 
 export const MARKER_LABELS: Record<keyof MarkerConditions, string> = {
-  poisoned: 'Envenenado',
-  burned: 'Queimado',
+  poisoned: 'Poisoned',
+  burned: 'Burned',
 }
 
 export const CONDITION_COLORS: Record<string, string> = {
@@ -64,13 +64,13 @@ export interface FieldSide {
 }
 
 export const ENERGY_LABEL: Record<EnergyType, string> = {
-  grass: 'Planta',
-  fire: 'Fogo',
-  water: 'Água',
-  lightning: 'Elétrica',
-  psychic: 'Psíquica',
-  fighting: 'Lutador',
-  darkness: 'Sombrio',
+  grass: 'Grass',
+  fire: 'Fire',
+  water: 'Water',
+  lightning: 'Lightning',
+  psychic: 'Psychic',
+  fighting: 'Fighting',
+  darkness: 'Darkness',
   metal: 'Metal',
 }
 

@@ -3,9 +3,9 @@ import { NavLink, Outlet } from "react-router-dom";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 const tabs = [
-  { to: "/colecao", label: "Coleção", icon: BookOpenIcon },
-  { to: "/jogar", label: "Jogar", icon: GamepadIcon },
-  { to: "/config", label: "Config", icon: SettingsIcon },
+  { to: "/colecao", label: "Collection", icon: BookOpenIcon },
+  { to: "/jogar", label: "Play", icon: GamepadIcon },
+  { to: "/config", label: "Settings", icon: SettingsIcon },
 ];
 
 export function TabBar() {

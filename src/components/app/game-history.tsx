@@ -42,7 +42,7 @@ export function GameHistory({ open, side, onOpenChange }: GameHistoryProps) {
       <div className="flex items-center justify-between p-4 border-b border-gray-800">
         <div className="flex items-center gap-2">
           <ClockIcon className="size-4 text-gray-400" />
-          <span className="text-white font-bold text-sm">Histórico</span>
+          <span className="text-white font-bold text-sm">History</span>
           <span className="text-xs text-gray-500">{history.length}</span>
         </div>
         <button
@@ -58,7 +58,7 @@ export function GameHistory({ open, side, onOpenChange }: GameHistoryProps) {
       <div className="flex-1 overflow-y-auto p-3 space-y-1.5">
         {history.length === 0 ? (
           <p className="text-gray-500 text-sm text-center py-6">
-            Nenhuma ação registrada
+            No actions recorded
           </p>
         ) : (
           [...history].reverse().map((action) => (
@@ -77,7 +77,7 @@ export function GameHistory({ open, side, onOpenChange }: GameHistoryProps) {
                   <span
                     className={`text-[10px] font-bold ${action.side === "a" ? "text-blue-400" : "text-red-400"}`}
                   >
-                    Lado {action.side.toUpperCase()}
+                    Side {action.side.toUpperCase()}
                   </span>
                   <span className="text-[10px] text-gray-500">
                     {formatTime(action.timestamp)}

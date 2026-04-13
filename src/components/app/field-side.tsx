@@ -228,7 +228,7 @@ export function FieldSide({
         <SlotPopover
           slot={selectedSlot}
           side={side}
-          label={selectedSlot.position === "active" ? "Ativo" : "Banco"}
+          label={selectedSlot.position === "active" ? "Active" : "Bench"}
           open={!!selectedSlotId}
           onOpenChange={(open) => {
             if (!open) {

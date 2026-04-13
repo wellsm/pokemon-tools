@@ -102,7 +102,7 @@ export function BoardSlot({
             <div
               className="size-5 sm:size-7 rounded-full flex items-center justify-center text-[8px] sm:text-[10px] font-bold text-white"
               style={{ backgroundColor: CONDITION_COLORS.poisoned }}
-              title="Envenenado"
+              title="Poisoned"
             >
               <Skull className="size-4" />
             </div>
@@ -111,7 +111,7 @@ export function BoardSlot({
             <div
               className="size-5 sm:size-7 rounded-full flex items-center justify-center text-[8px] sm:text-[10px] font-bold text-white"
               style={{ backgroundColor: CONDITION_COLORS.burned }}
-              title="Queimado"
+              title="Burned"
             >
               <Flame className="size-4" />
             </div>

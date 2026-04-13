@@ -18,7 +18,7 @@ export function EnergyIndicator({ side }: EnergyIndicatorProps) {
         className="flex items-center gap-2 bg-gray-900/90 border border-gray-700 rounded-lg px-3 py-2 hover:bg-gray-800/90 transition-colors"
       >
         <span className="text-lg">⚡</span>
-        <span className="text-sm text-gray-400">Gerar</span>
+        <span className="text-sm text-gray-400">Generate</span>
       </button>
     )
   }
@@ -32,7 +32,7 @@ export function EnergyIndicator({ side }: EnergyIndicatorProps) {
       />
       <div className="text-sm leading-tight">
         <div className="font-semibold text-gray-200">
-          Energia
+          Energy
         </div>
         <div className="text-gray-400">{ENERGY_LABEL[energy]}</div>
       </div>

@@ -10,7 +10,7 @@ export function Settings() {
     <div className="min-h-screen bg-background pb-16 md:pb-0">
       <header className="bg-primary px-4 py-4 shadow-sm">
         <div className="max-w-md mx-auto">
-          <h1 className="font-black text-xl text-white">Configurações</h1>
+          <h1 className="font-black text-xl text-white">Settings</h1>
         </div>
       </header>
 
@@ -23,9 +23,9 @@ export function Settings() {
               <SunIcon className="size-5 text-muted-foreground" />
             )}
             <div>
-              <div className="text-sm font-medium text-foreground">Tema escuro</div>
+              <div className="text-sm font-medium text-foreground">Dark theme</div>
               <div className="text-xs text-muted-foreground">
-                {theme === 'dark' ? 'Ativado' : 'Desativado'}
+                {theme === 'dark' ? 'Enabled' : 'Disabled'}
               </div>
             </div>
           </div>

@@ -41,7 +41,7 @@ export function GameSetup() {
       {/* Format selector */}
       <div>
         <p className="text-xs text-gray-400 uppercase tracking-wider mb-2">
-          Formato
+          Format
         </p>
         <div className="flex gap-2">
           {(["standard", "pocket"] as const).map((f) => (
@@ -58,7 +58,7 @@ export function GameSetup() {
                 {f === "standard" ? "Standard" : "Pocket"}
               </div>
               <div className="text-xs mt-0.5 opacity-70">
-                1 ativo + {FORMAT_DEFAULTS[f].benchSize} banco
+                1 active + {FORMAT_DEFAULTS[f].benchSize} bench
               </div>
             </button>
           ))}
@@ -68,24 +68,24 @@ export function GameSetup() {
       {/* Module toggles */}
       <div>
         <p className="text-xs text-gray-400 uppercase tracking-wider mb-2">
-          Módulos
+          Modules
         </p>
         <div className="space-y-2">
           {[
             {
               key: "coins" as const,
-              label: "🪙 Moedas",
-              desc: "Jogar 1 ou mais moedas",
+              label: "🪙 Coins",
+              desc: "Flip 1 or more coins",
             },
             {
               key: "energy" as const,
-              label: "⚡ Gerador de Energia",
-              desc: "1 energia/turno (Pocket)",
+              label: "⚡ Energy Generator",
+              desc: "1 energy/turn (Pocket)",
             },
             {
               key: "board" as const,
-              label: "🎯 Tabuleiro de Dano",
-              desc: "Contadores por slot",
+              label: "🎯 Damage Board",
+              desc: "Counters per slot",
             },
           ].map((mod) => {
             const isEnergyDisabled =
@@ -119,7 +119,7 @@ export function GameSetup() {
       {modules.energy && format === "pocket" && (
         <div>
           <p className="text-xs text-gray-400 uppercase tracking-wider mb-2">
-            Energias ({energyPool.length}/{MAX_ENERGY_TYPES})
+            Energies ({energyPool.length}/{MAX_ENERGY_TYPES})
           </p>
           <div className="flex flex-wrap gap-2">
             {ENERGY_TYPES.map((type) => {
@@ -159,7 +159,7 @@ export function GameSetup() {
         disabled={!canStart}
         className="w-full py-3.5 rounded-2xl bg-primary text-primary-foreground font-bold text-base hover:bg-primary/90 transition-colors active:scale-[0.98] disabled:opacity-40 disabled:pointer-events-none"
       >
-        Iniciar Partida
+        Start Game
       </button>
     </div>
   );
