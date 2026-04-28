@@ -1,6 +1,8 @@
+/// <reference types="vitest/config" />
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
+import path from 'node:path'
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
@@ -8,6 +10,12 @@ export default defineConfig({
     host: true,
   },
   resolve: {
-    alias: { '@': '/Users/well/Projects/pokedex-tcg/src' },
+    alias: { '@': path.resolve(__dirname, 'src') },
+  },
+  test: {
+    environment: 'jsdom',
+    globals: true,
+    setupFiles: ['./src/setup-tests.ts'],
+    include: ['src/**/*.test.{ts,tsx}'],
   },
 })
