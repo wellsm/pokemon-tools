@@ -27,3 +27,6 @@ pnpm-debug.log*
 # Tooling local caches
 .superpowers/
 .claude/
+
+# Worktrees
+.worktrees/
