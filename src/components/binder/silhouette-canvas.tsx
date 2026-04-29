@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
-import { ARTWORK_URL } from '@/pokemon-data'
+import { getSpriteUrl } from '@/lib/pokemon'
 
-interface Props { id: number }
+interface Props { pokemonId: number }
 
-export function SilhouetteCanvas({ id }: Props) {
+export function SilhouetteCanvas({ pokemonId }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const [ready, setReady] = useState(false)
 
@@ -29,8 +29,8 @@ export function SilhouetteCanvas({ id }: Props) {
     }
 
     img.onerror = () => setReady(true)
-    img.src = ARTWORK_URL(id)
-  }, [id])
+    img.src = getSpriteUrl(pokemonId, 'official')
+  }, [pokemonId])
 
   return (
     <canvas
