@@ -2,7 +2,6 @@ import { Folder, Gamepad2, Settings as SettingsIcon } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { Header } from '@/components/layout/header'
 import { TacticalCard } from '@/components/shared/tactical-card'
-import { StatusPanel } from '@/components/shared/status-panel'
 import { useMatchStore } from '@/stores/match-store'
 import { useT } from '@/lib/i18n/store'
 

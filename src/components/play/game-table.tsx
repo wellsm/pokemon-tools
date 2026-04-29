@@ -24,17 +24,17 @@ export function GameTable() {
   const [showEndConfirm, setShowEndConfirm] = useState(false);
   const [endSide, setEndSide] = useState<Side>("b");
 
-  const [historySide, setHistorySide] = useState<Side>("b");
-  const [historyOpen, setHistoryOpen] = useState(false);
+  // const [historySide, setHistorySide] = useState<Side>("b");
+  // const [historyOpen, setHistoryOpen] = useState(false);
 
-  function toggleHistory(side: Side) {
-    if (historyOpen && historySide === side) {
-      setHistoryOpen(false);
-    } else {
-      setHistorySide(side);
-      setHistoryOpen(true);
-    }
-  }
+  // function toggleHistory(side: Side) {
+  //   if (historyOpen && historySide === side) {
+  //     setHistoryOpen(false);
+  //   } else {
+  //     setHistorySide(side);
+  //     setHistoryOpen(true);
+  //   }
+  // }
 
   function openCoin(side: Side) {
     setCoinSide(side);
@@ -53,7 +53,7 @@ export function GameTable() {
               onCoinFlip={modules.coins ? () => openCoin("a") : undefined}
               onEndGame={() => { setEndSide("a"); setShowEndConfirm(true); }}
               //onHistory={() => toggleHistory("a")}
-              historyActive={historyOpen && historySide === "a"}
+              // historyActive={historyOpen && historySide === "a"}
             />
           </div>
         )}
@@ -64,7 +64,7 @@ export function GameTable() {
             onCoinFlip={modules.coins ? () => openCoin("b") : undefined}
             onEndGame={() => { setEndSide("b"); setShowEndConfirm(true); }}
             //onHistory={() => toggleHistory("b")}
-            historyActive={historyOpen && historySide === "b"}
+            // historyActive={historyOpen && historySide === "b"}
           />
         )}
 
