@@ -47,6 +47,7 @@ export function getSpriteUrl(id: number, kind: 'official' | 'sprite' = 'official
   if (kind === 'official') {
     return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`
   }
+
   return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`
 }
 
@@ -61,14 +62,16 @@ export const TYPE_COLOR: Record<string, string> = {
 
 export function searchPokemon(query: string, region: RegionKey = 'national'): Pokemon[] {
   const q = query.trim().toLowerCase()
-  if (!q) return []
-  const pool = getPokemonByRegion(region)
-  const asNum = parseInt(q, 10)
-  if (!Number.isNaN(asNum)) {
-    const hit = pool.find((p) => p.id === asNum)
-    return hit ? [hit] : []
+
+  if (!q) {
+    return []
   }
-  const exact = pool.find((p) => p.name.toLowerCase() === q)
-  if (exact) return [exact]
-  return pool.filter((p) => p.name.toLowerCase().startsWith(q)).slice(0, 12)
+
+  const pool = getPokemonByRegion(region)
+
+  if (/^\d+$/.test(q)) {
+    return pool.filter((p) => String(p.id).startsWith(q)).slice(0, 5)
+  }
+
+  return pool.filter((p) => p.name.toLowerCase().startsWith(q)).slice(0, 5)
 }
