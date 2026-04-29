@@ -1,7 +1,7 @@
 import { useState, useCallback, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useBinderStore } from '@/store'
-import { totalPages, pageCapacity } from '@/lib/binder'
+import { totalPages, pageCapacity } from '@/lib/binder-math'
 import { BinderPage } from '@/components/app/binder-page'
 import { SearchModal } from '@/components/app/search-modal'
 import { SearchDrawer } from '@/components/app/search-drawer'

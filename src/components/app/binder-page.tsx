@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 import { useBinderStore } from '@/store'
 import { PokemonCard } from './pokemon-card'
-import { pageCapacity } from '@/lib/binder'
+import { pageCapacity } from '@/lib/binder-math'
 import type { Folder } from '@/store'
 import { cn } from '@/lib/utils'
 
