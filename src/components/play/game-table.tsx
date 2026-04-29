@@ -77,23 +77,23 @@ export function GameTable() {
 
       {showEndConfirm && createPortal(
         <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4">
-          <div className={`bg-gray-900 border border-gray-700 rounded-2xl p-6 max-w-xs w-full text-center space-y-4 ${endSide === 'a' ? 'rotate-180' : ''}`}>
-            <p className="font-bold text-white text-lg">End game?</p>
-            <p className="text-sm text-gray-400">
+          <div className={`bg-surface-container border border-outline-variant rounded-2xl p-6 max-w-xs w-full text-center space-y-4 ${endSide === 'a' ? 'rotate-180' : ''}`}>
+            <p className="font-bold text-on-surface text-lg">End game?</p>
+            <p className="text-sm text-on-surface-variant">
               All progress will be lost.
             </p>
             <div className="flex gap-2">
               <button
                 type="button"
                 onClick={() => setShowEndConfirm(false)}
-                className="flex-1 py-2.5 rounded-xl bg-gray-800 border border-gray-700 text-sm font-medium text-gray-300 hover:bg-gray-700 transition-colors"
+                className="flex-1 py-2.5 rounded-xl bg-surface-container-high border border-outline-variant text-sm font-medium text-on-surface hover:opacity-80 transition-colors"
               >
                 Cancel
               </button>
               <button
                 type="button"
                 onClick={endGame}
-                className="flex-1 py-2.5 rounded-xl bg-red-500 text-white text-sm font-medium hover:bg-red-600 transition-colors"
+                className="flex-1 py-2.5 rounded-xl bg-primary-container text-on-primary-container text-sm font-medium hover:opacity-90 transition-colors"
               >
                 End
               </button>

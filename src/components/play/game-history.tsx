@@ -25,6 +25,7 @@ const TYPE_ICONS: Record<string, string> = {
 
 export function GameHistory({ open, side, onOpenChange }: GameHistoryProps) {
   const history = useGameStore((s) => s.history);
+  const prize = useGameStore((s) => s.prize);
   const isMobile = useIsMobile();
 
   if (!open) {
@@ -33,22 +34,22 @@ export function GameHistory({ open, side, onOpenChange }: GameHistoryProps) {
 
   const content = (
     <div
-      className={`bg-gray-900/95 border border-gray-700 flex flex-col ${isMobile
+      className={`bg-surface-container border border-outline-variant flex flex-col ${isMobile
         ? "rounded-t-2xl max-h-[70vh]"
         : "rounded-2xl h-full max-h-[80vh] w-[300px]"
         } ${side === "a" ? "rotate-180" : ""}`}
     >
       {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b border-gray-800">
+      <div className="flex items-center justify-between p-4 border-b border-outline-variant">
         <div className="flex items-center gap-2">
-          <ClockIcon className="size-4 text-gray-400" />
-          <span className="text-white font-bold text-sm">History</span>
-          <span className="text-xs text-gray-500">{history.length}</span>
+          <ClockIcon className="size-4 text-on-surface-variant" />
+          <span className="text-on-surface font-bold text-sm">History</span>
+          <span className="text-xs text-on-surface-variant">{history.length}</span>
         </div>
         <button
           type="button"
           onClick={() => onOpenChange(false)}
-          className="text-gray-500 hover:text-gray-300 transition-colors"
+          className="text-on-surface-variant hover:text-on-surface transition-colors"
         >
           <XIcon className="size-4" />
         </button>
@@ -57,20 +58,20 @@ export function GameHistory({ open, side, onOpenChange }: GameHistoryProps) {
       {/* List */}
       <div className="flex-1 overflow-y-auto p-3 space-y-1.5">
         {history.length === 0 ? (
-          <p className="text-gray-500 text-sm text-center py-6">
+          <p className="text-on-surface-variant text-sm text-center py-6">
             No actions recorded
           </p>
         ) : (
           [...history].reverse().map((action) => (
             <div
               key={action.id}
-              className="flex items-start gap-2 px-2.5 py-2 rounded-lg bg-gray-800/50"
+              className="flex items-start gap-2 px-2.5 py-2 rounded-xl bg-surface-container border border-outline-variant"
             >
               <span className="text-sm shrink-0">
                 {TYPE_ICONS[action.type] ?? "•"}
               </span>
               <div className="flex-1 min-w-0">
-                <p className="text-sm text-gray-200 leading-snug">
+                <p className="text-sm text-on-surface leading-snug">
                   {action.description}
                 </p>
                 <div className="flex items-center gap-2 mt-0.5">
@@ -79,7 +80,7 @@ export function GameHistory({ open, side, onOpenChange }: GameHistoryProps) {
                   >
                     Side {action.side.toUpperCase()}
                   </span>
-                  <span className="text-[10px] text-gray-500">
+                  <span className="text-[10px] text-on-surface-variant">
                     {formatTime(action.timestamp)}
                   </span>
                 </div>
@@ -87,6 +88,24 @@ export function GameHistory({ open, side, onOpenChange }: GameHistoryProps) {
             </div>
           ))
         )}
+
+        {/* Quick Stats */}
+        <div className="mt-6 p-4 rounded-xl border border-primary-container/40 bg-surface-container">
+          <div className="flex justify-between items-center">
+            <span className="text-xs font-bold uppercase tracking-wider text-on-surface-variant">Prize Cards Left</span>
+            <span className="text-primary-container font-bold">{prize.a} - {prize.b}</span>
+          </div>
+          <div className="flex justify-between mt-3">
+            <div title="Em breve" className="opacity-50">
+              <p className="text-[10px] font-bold uppercase tracking-wider text-on-surface-variant">Accuracy</p>
+              <p className="text-on-surface">--</p>
+            </div>
+            <div title="Em breve" className="opacity-50">
+              <p className="text-[10px] font-bold uppercase tracking-wider text-on-surface-variant">Tempo</p>
+              <p className="text-on-surface">--</p>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

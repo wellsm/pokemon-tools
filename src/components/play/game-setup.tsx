@@ -40,7 +40,7 @@ export function GameSetup() {
     <div className="px-4 py-6 space-y-6">
       {/* Format selector */}
       <div>
-        <p className="text-xs text-gray-400 uppercase tracking-wider mb-2">
+        <p className="text-xs text-on-surface-variant uppercase tracking-wider mb-2">
           Format
         </p>
         <div className="flex gap-2">
@@ -51,7 +51,7 @@ export function GameSetup() {
               onClick={() => handleFormatChange(f)}
               className={`flex-1 p-3 rounded-xl text-center transition-colors border-2 ${format === f
                 ? "border-primary bg-primary text-primary-foreground"
-                : "border-gray-200 bg-white text-gray-600 hover:border-gray-300"
+                : "border-outline-variant bg-surface-container text-on-surface-variant hover:border-outline"
                 }`}
             >
               <div className="font-bold text-sm">
@@ -67,7 +67,7 @@ export function GameSetup() {
 
       {/* Module toggles */}
       <div>
-        <p className="text-xs text-gray-400 uppercase tracking-wider mb-2">
+        <p className="text-xs text-on-surface-variant uppercase tracking-wider mb-2">
           Modules
         </p>
         <div className="space-y-2">
@@ -93,14 +93,14 @@ export function GameSetup() {
             return (
               <div
                 key={mod.key}
-                className={`flex items-center justify-between p-3 rounded-xl bg-white border border-gray-100 ${isEnergyDisabled ? "opacity-40" : ""
+                className={`flex items-center justify-between p-3 rounded-xl bg-surface-container border border-outline-variant ${isEnergyDisabled ? "opacity-40" : ""
                   }`}
               >
                 <div>
-                  <div className="text-sm font-medium text-gray-900">
+                  <div className="text-sm font-medium text-on-surface">
                     {mod.label}
                   </div>
-                  <div className="text-xs text-gray-400">{mod.desc}</div>
+                  <div className="text-xs text-on-surface-variant">{mod.desc}</div>
                 </div>
                 <Switch
                   checked={modules[mod.key]}
@@ -118,7 +118,7 @@ export function GameSetup() {
       {/* Energy selection */}
       {modules.energy && format === "pocket" && (
         <div>
-          <p className="text-xs text-gray-400 uppercase tracking-wider mb-2">
+          <p className="text-xs text-on-surface-variant uppercase tracking-wider mb-2">
             Energies ({energyPool.length}/{MAX_ENERGY_TYPES})
           </p>
           <div className="flex flex-wrap gap-2">
@@ -135,8 +135,8 @@ export function GameSetup() {
                   className={`flex items-center gap-2 px-3 py-2 rounded-xl text-sm transition-all border-2 ${selected
                     ? "border-primary bg-primary text-primary-foreground"
                     : disabled
-                      ? "border-gray-100 bg-gray-50 text-gray-300 cursor-not-allowed"
-                      : "border-gray-200 bg-white text-gray-600 hover:border-gray-300"
+                      ? "border-outline-variant bg-surface-container text-on-surface-variant opacity-40 cursor-not-allowed"
+                      : "border-outline-variant bg-surface-container text-on-surface-variant hover:border-outline"
                     }`}
                 >
                   <img

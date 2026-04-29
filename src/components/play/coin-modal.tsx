@@ -41,17 +41,17 @@ export function CoinModal({ open, side, onOpenChange }: CoinModalProps) {
       />
 
       <div
-        className={`relative z-10 bg-gray-900/95 border border-gray-700 rounded-2xl p-6 w-[320px] max-w-[90vw] space-y-5 ${side === "a" ? "rotate-180" : ""}`}
+        className={`relative z-10 bg-surface-container border border-outline-variant rounded-2xl p-6 w-[320px] max-w-[90vw] space-y-5 ${side === "a" ? "rotate-180" : ""}`}
       >
         {/* Header */}
         <div className="flex items-center justify-between">
-          <span className="text-white font-bold text-lg">🪙 Coins</span>
+          <span className="text-on-surface font-bold text-lg">🪙 Coins</span>
           <div className="flex items-center gap-2">
             {results && (
               <button
                 type="button"
                 onClick={handleReset}
-                className="text-gray-500 hover:text-gray-300 transition-colors"
+                className="text-on-surface-variant hover:text-on-surface transition-colors"
                 title="Resetar"
               >
                 <RotateCcwIcon className="size-5" />
@@ -60,7 +60,7 @@ export function CoinModal({ open, side, onOpenChange }: CoinModalProps) {
             <button
               type="button"
               onClick={() => onOpenChange(false)}
-              className="text-gray-500 hover:text-gray-300 transition-colors"
+              className="text-on-surface-variant hover:text-on-surface transition-colors"
             >
               <XIcon className="size-5" />
             </button>
@@ -69,21 +69,21 @@ export function CoinModal({ open, side, onOpenChange }: CoinModalProps) {
 
         {/* Quantity selector */}
         <div className="flex items-center justify-center gap-4">
-          <span className="text-sm text-gray-400">Quantity:</span>
+          <span className="text-sm text-on-surface-variant">Quantity:</span>
           <button
             type="button"
             onClick={() => setCount((c) => Math.max(1, c - 1))}
-            className="w-9 h-9 rounded-lg bg-gray-800 border border-gray-700 flex items-center justify-center text-gray-300 hover:bg-gray-700 transition-colors"
+            className="w-9 h-9 rounded-xl bg-surface-container-high border border-outline-variant flex items-center justify-center text-on-surface hover:opacity-80 transition-colors"
           >
             <MinusIcon className="size-4" />
           </button>
-          <span className="text-2xl font-bold text-white w-8 text-center">
+          <span className="text-2xl font-bold text-on-surface w-8 text-center">
             {count}
           </span>
           <button
             type="button"
             onClick={() => setCount((c) => c + 1)}
-            className="w-9 h-9 rounded-lg bg-gray-800 border border-gray-700 flex items-center justify-center text-gray-300 hover:bg-gray-700 transition-colors"
+            className="w-9 h-9 rounded-xl bg-surface-container-high border border-outline-variant flex items-center justify-center text-on-surface hover:opacity-80 transition-colors"
           >
             <PlusIcon className="size-4" />
           </button>
@@ -103,7 +103,7 @@ export function CoinModal({ open, side, onOpenChange }: CoinModalProps) {
                       ? "bg-linear-to-br from-amber-400 to-amber-600 text-black/40"
                       : isHeads
                         ? "bg-linear-to-br from-amber-400 to-amber-600 text-black"
-                        : "bg-linear-to-br from-gray-400 to-gray-600 text-white"
+                        : "bg-linear-to-br from-gray-400 to-gray-600 text-on-surface"
                     }`}
                   style={{ perspective: "600px" }}
                 >
@@ -116,10 +116,10 @@ export function CoinModal({ open, side, onOpenChange }: CoinModalProps) {
 
         {/* Results summary */}
         {results && (
-          <div className="text-center text-base bg-gray-800/80 rounded-xl py-2.5 px-4">
+          <div className="text-center text-base bg-surface-container-high rounded-xl py-2.5 px-4">
             <span className="text-green-400 font-semibold">{heads} Heads</span>
             {" · "}
-            <span className="text-red-400 font-semibold">{tails} Tails</span>
+            <span className="text-primary-container font-semibold">{tails} Tails</span>
           </div>
         )}
 

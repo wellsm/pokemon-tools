@@ -8,7 +8,6 @@ import {
   ENERGY_TYPES,
   ORIENTATION_LABELS,
   MARKER_LABELS,
-  CONDITION_COLORS,
 } from "@/game-data";
 import { type Side, useGameStore } from "@/stores/match-store";
 
@@ -47,15 +46,15 @@ export function SlotPopover({
       />
 
       <div
-        className={`relative z-10 mx-auto bg-gray-900/95 border border-gray-700 rounded-2xl p-5 w-[340px] max-w-[90vw] max-h-[80vh] overflow-y-auto space-y-5 ${side === "a" ? "rotate-180" : ""}`}
+        className={`relative z-10 mx-auto bg-surface-container border border-outline-variant rounded-2xl p-5 w-[340px] max-w-[90vw] max-h-[80vh] overflow-y-auto space-y-5 ${side === "a" ? "rotate-180" : ""}`}
       >
         {/* Header */}
         <div className="flex items-center justify-between">
-          <span className="text-white font-bold text-lg">{label}</span>
+          <span className="text-on-surface font-bold text-lg">{label}</span>
           <button
             type="button"
             onClick={() => onOpenChange(false)}
-            className="text-gray-500 hover:text-gray-300 transition-colors"
+            className="text-on-surface-variant hover:text-on-surface transition-colors"
           >
             <XIcon className="size-5" />
           </button>
@@ -63,7 +62,7 @@ export function SlotPopover({
 
         {/* Damage counter */}
         <div>
-          <p className="text-sm text-gray-400 uppercase tracking-wider mb-2">
+          <p className="text-sm text-on-surface-variant uppercase tracking-wider mb-2">
             Damage
           </p>
           <div className="flex items-center justify-center gap-2">
@@ -72,12 +71,12 @@ export function SlotPopover({
                 key={amt}
                 type="button"
                 onClick={() => addDamage(side, slot.id, amt)}
-                className="w-14 h-10 rounded-lg bg-gray-800 border border-gray-700 text-base font-medium text-gray-300 hover:bg-gray-700 transition-colors"
+                className="w-14 h-10 rounded-md bg-surface-container-high border border-outline-variant text-base font-medium text-on-surface p-3 hover:opacity-80 transition-colors"
               >
                 {amt}
               </button>
             ))}
-            <span className="text-3xl font-black text-red-500 w-20 text-center">
+            <span className="text-3xl font-black text-on-surface w-20 text-center">
               {slot.damage}
             </span>
             {[10, 20].map((amt) => (
@@ -85,7 +84,7 @@ export function SlotPopover({
                 key={amt}
                 type="button"
                 onClick={() => addDamage(side, slot.id, amt)}
-                className="w-14 h-10 rounded-lg bg-gray-800 border border-gray-700 text-base font-medium text-gray-300 hover:bg-gray-700 transition-colors"
+                className="w-14 h-10 rounded-md bg-surface-container-high border border-outline-variant text-base font-medium text-on-surface p-3 hover:opacity-80 transition-colors"
               >
                 +{amt}
               </button>
@@ -95,11 +94,11 @@ export function SlotPopover({
 
         {/* Conditions — only for active slot */}
         {slot.position === 'active' && <div>
-          <p className="text-sm text-gray-400 uppercase tracking-wider mb-2">
+          <p className="text-sm text-on-surface-variant uppercase tracking-wider mb-2">
             Conditions
           </p>
-          {/* Orientation conditions (mutually exclusive) */}
-          <div className="flex gap-1.5 mb-2">
+          {/* 3×2 grid: orientations row + markers row */}
+          <div className="grid grid-cols-3 gap-1.5 mb-2">
             {ORIENTATIONS.map((cond) => {
               const active = slot.orientation === cond;
               return (
@@ -107,20 +106,18 @@ export function SlotPopover({
                   key={cond}
                   type="button"
                   onClick={() => setOrientation(side, slot.id, active ? null : cond)}
-                  className="flex-1 py-2 rounded-lg text-xs font-medium transition-colors border"
-                  style={{
-                    borderColor: active ? CONDITION_COLORS[cond] : '#374151',
-                    backgroundColor: active ? `${CONDITION_COLORS[cond]}20` : '#1f2937',
-                    color: active ? CONDITION_COLORS[cond] : '#9ca3af',
-                  }}
+                  className={`py-2 rounded-xl text-xs font-medium transition-colors border ${
+                    active
+                      ? 'bg-primary-container/20 border-primary-container text-primary-container'
+                      : 'bg-surface-container border border-outline-variant text-on-surface-variant'
+                  }`}
                 >
                   {ORIENTATION_LABELS[cond]}
                 </button>
               );
             })}
           </div>
-          {/* Marker conditions (toggleable) */}
-          <div className="flex gap-1.5">
+          <div className="grid grid-cols-3 gap-1.5">
             {MARKERS.map((marker) => {
               const active = slot.markers[marker];
               return (
@@ -128,12 +125,11 @@ export function SlotPopover({
                   key={marker}
                   type="button"
                   onClick={() => toggleMarker(side, slot.id, marker)}
-                  className="flex-1 py-2 rounded-lg text-xs font-medium transition-colors border"
-                  style={{
-                    borderColor: active ? CONDITION_COLORS[marker] : '#374151',
-                    backgroundColor: active ? `${CONDITION_COLORS[marker]}20` : '#1f2937',
-                    color: active ? CONDITION_COLORS[marker] : '#9ca3af',
-                  }}
+                  className={`py-2 rounded-xl text-xs font-medium transition-colors border ${
+                    active
+                      ? 'bg-primary-container/20 border-primary-container text-primary-container'
+                      : 'bg-surface-container border border-outline-variant text-on-surface-variant'
+                  }`}
                 >
                   {MARKER_LABELS[marker]}
                 </button>
@@ -144,7 +140,7 @@ export function SlotPopover({
 
         {/* Attached energies */}
         <div>
-          <p className="text-sm text-gray-400 uppercase tracking-wider mb-2">
+          <p className="text-sm text-on-surface-variant uppercase tracking-wider mb-2">
             Energies
           </p>
           {slot.energies.length > 0 && (
@@ -162,7 +158,7 @@ export function SlotPopover({
                 key={type}
                 type="button"
                 onClick={() => attachEnergy(side, slot.id, type)}
-                className="w-9 h-9 rounded-lg bg-gray-800 border border-gray-700 p-1 hover:bg-gray-700 transition-colors"
+                className="w-9 h-9 rounded-xl bg-surface-container-high text-on-surface border border-outline-variant p-1 hover:opacity-80 transition-colors"
               >
                 <img
                   src={ENERGY_IMAGE[type]}
@@ -178,10 +174,10 @@ export function SlotPopover({
         <button
           type="button"
           onClick={() => { toggleAbility(side, slot.id); onOpenChange(false); }}
-          className={`w-full py-2.5 rounded-xl text-sm font-medium transition-colors border ${
+          className={`w-full py-3 rounded-xl text-sm font-bold transition-colors ${
             slot.abilityUsed
-              ? 'border-cyan-400 bg-cyan-400/20 text-cyan-400'
-              : 'border-gray-700 bg-gray-800 text-gray-300 hover:bg-gray-700'
+              ? 'bg-secondary-container text-on-secondary-container'
+              : 'bg-secondary-container text-on-secondary-container hover:opacity-90'
           }`}
         >
           {slot.abilityUsed ? 'Deactivate Ability' : 'Use Ability'}
@@ -192,15 +188,15 @@ export function SlotPopover({
           <button
             type="button"
             onClick={() => clearDamage(side, slot.id)}
-            className="flex-1 py-2.5 rounded-xl bg-gray-800 border border-gray-700 text-sm font-medium text-gray-300 hover:bg-gray-700 transition-colors"
+            className="flex-1 py-3 rounded-xl bg-surface-container-high text-on-surface text-sm font-medium hover:opacity-80 transition-colors"
           >
-            Clear damage
+            Clear Damage
           </button>
           {slot.energies.length > 0 && (
             <button
               type="button"
               onClick={() => clearEnergies(side, slot.id)}
-              className="flex-1 py-2.5 rounded-xl bg-gray-800 border border-gray-700 text-sm font-medium text-gray-300 hover:bg-gray-700 transition-colors"
+              className="flex-1 py-3 rounded-xl bg-surface-container-high text-on-surface text-sm font-medium hover:opacity-80 transition-colors"
             >
               Clear energies
             </button>
@@ -209,7 +205,7 @@ export function SlotPopover({
             <button
               type="button"
               onClick={() => clearConditions(side, slot.id)}
-              className="flex-1 py-2.5 rounded-xl bg-gray-800 border border-gray-700 text-sm font-medium text-gray-300 hover:bg-gray-700 transition-colors"
+              className="flex-1 py-3 rounded-xl bg-surface-container-high text-on-surface text-sm font-medium hover:opacity-80 transition-colors"
             >
               Clear conditions
             </button>
