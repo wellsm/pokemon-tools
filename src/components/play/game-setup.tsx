@@ -12,7 +12,9 @@ import {
 } from "@/game-data";
 import { useGameStore } from "@/stores/match-store";
 
-export function GameSetup() {
+type GameSetupProps = { onComplete?: () => void }
+
+export function GameSetup({ onComplete }: GameSetupProps = {}) {
   const format = useGameStore((s) => s.format);
   const modules = useGameStore((s) => s.modules);
   const energyPool = useGameStore((s) => s.energyPool);
@@ -155,7 +157,7 @@ export function GameSetup() {
       {/* Start button */}
       <button
         type="button"
-        onClick={startGame}
+        onClick={onComplete ?? startGame}
         disabled={!canStart}
         className="w-full py-3.5 rounded-2xl bg-primary text-primary-foreground font-bold text-base hover:bg-primary/90 transition-colors active:scale-[0.98] disabled:opacity-40 disabled:pointer-events-none"
       >
