@@ -9,7 +9,7 @@ type SettingsState = {
 
 export const useSettingsStore = create<SettingsState>()(
   persist(
-    (set) => ({
+    () => ({
       _v: 1,
       clearAllData: () => {
         // Clear our v1 keys (other stores' actions will run alongside in pages/settings.tsx)
