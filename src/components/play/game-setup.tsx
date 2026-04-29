@@ -1,4 +1,4 @@
-// src/components/app/game-setup.tsx
+// src/components/play/game-setup.tsx
 
 import { Switch } from "@/components/ui/switch";
 import {
@@ -10,7 +10,7 @@ import {
   type GameFormat,
   MAX_ENERGY_TYPES,
 } from "@/game-data";
-import { useGameStore } from "@/game-store";
+import { useGameStore } from "@/stores/match-store";
 
 export function GameSetup() {
   const format = useGameStore((s) => s.format);

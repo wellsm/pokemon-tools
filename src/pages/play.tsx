@@ -1,6 +1,6 @@
-import { GameSetup } from "@/components/app/game-setup";
-import { GameTable } from "@/components/app/game-table";
-import { useGameStore } from "@/game-store";
+import { GameSetup } from "@/components/play/game-setup";
+import { GameTable } from "@/components/play/game-table";
+import { useGameStore } from "@/stores/match-store";
 
 export function Play() {
   const active = useGameStore((s) => s.active);

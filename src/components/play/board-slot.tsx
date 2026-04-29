@@ -1,8 +1,8 @@
 import { Flame, Skull } from "lucide-react";
-import { EnergyBadge } from "@/components/app/energy-badge";
+import { EnergyBadge } from "@/components/play/energy-badge";
 import type { BoardSlot as BoardSlotType } from "@/game-data";
 import { CONDITION_COLORS, ORIENTATION_ROTATION } from "@/game-data";
-import type { Side } from "@/game-store";
+import type { Side } from "@/stores/match-store";
 import { cn } from "@/lib/utils";
 
 interface BoardSlotProps {

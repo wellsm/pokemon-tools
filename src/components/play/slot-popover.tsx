@@ -1,6 +1,6 @@
 import { XIcon } from "lucide-react";
 import { createPortal } from "react-dom";
-import { EnergyBadge } from "@/components/app/energy-badge";
+import { EnergyBadge } from "@/components/play/energy-badge";
 import {
   type BoardSlot,
   ENERGY_IMAGE,
@@ -10,7 +10,7 @@ import {
   MARKER_LABELS,
   CONDITION_COLORS,
 } from "@/game-data";
-import { type Side, useGameStore } from "@/game-store";
+import { type Side, useGameStore } from "@/stores/match-store";
 
 interface SlotPopoverProps {
   slot: BoardSlot;

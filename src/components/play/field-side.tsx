@@ -1,13 +1,13 @@
 import { ClockIcon, MinusIcon, PlusIcon } from "lucide-react";
 import { useCallback, useRef, useState } from "react";
-import { BoardSlot } from "@/components/app/board-slot";
-import { SlotPopover } from "@/components/app/slot-popover";
+import { BoardSlot } from "@/components/play/board-slot";
+import { SlotPopover } from "@/components/play/slot-popover";
 import type {
   BoardSlot as BoardSlotType,
   FieldSide as FieldSideType,
 } from "@/game-data";
 import { ENERGY_LABEL } from "@/game-data";
-import { type Side, useGameStore } from "@/game-store";
+import { type Side, useGameStore } from "@/stores/match-store";
 
 interface FieldSideProps {
   field: FieldSideType;

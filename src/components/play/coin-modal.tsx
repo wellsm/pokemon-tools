@@ -1,6 +1,6 @@
 import { MinusIcon, PlusIcon, RotateCcwIcon, XIcon } from "lucide-react";
 import { useCallback, useState } from "react";
-import { flipCoins, type Side } from "@/game-store";
+import { flipCoins, type Side } from "@/stores/match-store";
 
 interface CoinModalProps {
   open: boolean;

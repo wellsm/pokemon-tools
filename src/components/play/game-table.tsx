@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { createPortal } from "react-dom";
-import { CoinModal } from "@/components/app/coin-modal";
-import { EnergyIndicator } from "@/components/app/energy-indicator";
-import { FieldSide } from "@/components/app/field-side";
-import { GameHistory } from "@/components/app/game-history";
-import { type Side, useGameStore } from "@/game-store";
+import { CoinModal } from "@/components/play/coin-modal";
+import { EnergyIndicator } from "@/components/play/energy-indicator";
+import { FieldSide } from "@/components/play/field-side";
+import { GameHistory } from "@/components/play/game-history";
+import { type Side, useGameStore } from "@/stores/match-store";
 
 export function GameTable() {
   const { modules, fieldA, fieldB, endGame } = useGameStore();

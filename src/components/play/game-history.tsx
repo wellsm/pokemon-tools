@@ -1,6 +1,6 @@
 import { ClockIcon, XIcon } from "lucide-react";
 import { createPortal } from "react-dom";
-import { type Side, useGameStore } from "@/game-store";
+import { type Side, useGameStore } from "@/stores/match-store";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 interface GameHistoryProps {

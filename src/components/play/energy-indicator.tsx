@@ -1,4 +1,4 @@
-import { useGameStore, type Side } from '@/game-store'
+import { useGameStore, type Side } from '@/stores/match-store'
 import { ENERGY_IMAGE, ENERGY_LABEL } from '@/game-data'
 
 interface EnergyIndicatorProps {
