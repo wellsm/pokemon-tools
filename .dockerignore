@@ -1,0 +1,17 @@
+node_modules
+dist
+.git
+.github
+.vscode
+.idea
+.DS_Store
+*.log
+.env
+.env.*
+!.env.example
+.worktrees
+coverage
+.cache
+.turbo
+Dockerfile
+.dockerignore
