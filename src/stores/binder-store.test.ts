@@ -30,16 +30,6 @@ describe('binder-store', () => {
     expect(useBinderStore.getState().binders[0].ownedSlots).not.toContain(25)
   })
 
-  it('setMain enforces single-main', () => {
-    const a = useBinderStore.getState().createBinder({ name: 'A', region: 'kanto', grid: '3x3' })
-    const b = useBinderStore.getState().createBinder({ name: 'B', region: 'johto', grid: '3x3' })
-    useBinderStore.getState().setMain(a)
-    expect(useBinderStore.getState().binders.find(x=>x.id===a)?.isMain).toBe(true)
-    useBinderStore.getState().setMain(b)
-    expect(useBinderStore.getState().binders.find(x=>x.id===a)?.isMain).toBe(false)
-    expect(useBinderStore.getState().binders.find(x=>x.id===b)?.isMain).toBe(true)
-  })
-
   it('renameBinder and setCover update fields', () => {
     const id = useBinderStore.getState().createBinder({ name: 'A', region: 'kanto', grid: '3x3' })
     useBinderStore.getState().renameBinder(id, 'Renamed')

@@ -1,20 +1,35 @@
 import { useEffect, useRef, useState } from 'react'
 import { getSpriteUrl } from '@/lib/pokemon'
+import { useResolvedTheme } from '@/lib/theme'
 
 interface Props { pokemonId: number }
 
 export function SilhouetteCanvas({ pokemonId }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const [ready, setReady] = useState(false)
+  const theme = useResolvedTheme()
 
   useEffect(() => {
     const canvas = canvasRef.current
-    if (!canvas) return
+
+    if (!canvas) {
+      return
+    }
+
     const ctx = canvas.getContext('2d')
-    if (!ctx) return
+
+    if (!ctx) {
+      return
+    }
 
     setReady(false)
+
+    const fill =
+      getComputedStyle(document.documentElement).getPropertyValue('--silhouette').trim() ||
+      '#1a1a2e'
+
     const img = new Image()
+
     img.crossOrigin = 'anonymous'
 
     img.onload = () => {
@@ -23,14 +38,14 @@ export function SilhouetteCanvas({ pokemonId }: Props) {
       ctx.clearRect(0, 0, canvas.width, canvas.height)
       ctx.drawImage(img, 0, 0)
       ctx.globalCompositeOperation = 'source-in'
-      ctx.fillStyle = '#1a1a2e'
+      ctx.fillStyle = fill
       ctx.fillRect(0, 0, canvas.width, canvas.height)
       setReady(true)
     }
 
     img.onerror = () => setReady(true)
     img.src = getSpriteUrl(pokemonId, 'official')
-  }, [pokemonId])
+  }, [pokemonId, theme])
 
   return (
     <canvas

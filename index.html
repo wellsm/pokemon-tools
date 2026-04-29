@@ -5,6 +5,23 @@
     <link rel="icon" type="image/svg+xml" href="/pokeball.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Pokemon Tools</title>
+    <script>
+      (function () {
+        try {
+          var raw = localStorage.getItem('pokemon-tools/settings/v1')
+          var pref = 'system'
+          if (raw) {
+            var parsed = JSON.parse(raw)
+            if (parsed && parsed.state && parsed.state.themePreference) {
+              pref = parsed.state.themePreference
+            }
+          }
+          var dark = pref === 'dark' || (pref === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)
+          document.documentElement.classList.toggle('dark', dark)
+          document.documentElement.style.colorScheme = dark ? 'dark' : 'light'
+        } catch (e) {}
+      })()
+    </script>
   </head>
   <body>
     <div id="root"></div>

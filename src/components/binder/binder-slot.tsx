@@ -5,10 +5,11 @@ import { SilhouetteCanvas } from './silhouette-canvas'
 export type BinderSlotProps = {
   pokemonId: number
   owned: boolean
+  highlighted?: boolean
   onToggle: () => void
 }
 
-export function BinderSlot({ pokemonId, owned, onToggle }: BinderSlotProps) {
+export function BinderSlot({ pokemonId, owned, highlighted, onToggle }: BinderSlotProps) {
   const pokemon = getPokemon(pokemonId)
   const [imgFailed, setImgFailed] = useState(false)
   const showSprite = owned && !imgFailed
@@ -16,9 +17,10 @@ export function BinderSlot({ pokemonId, owned, onToggle }: BinderSlotProps) {
   return (
     <button
       onClick={onToggle}
-      className={`group relative aspect-square rounded-md overflow-hidden border
-                  ${owned ? 'border-outline bg-surface-container-high' : 'border-outline-variant bg-surface-container'}
-                  hover:border-primary-container transition-colors`}
+      className={`group relative w-full h-full min-h-0 rounded-md overflow-hidden border
+                  ${owned ? 'border-border bg-muted' : 'border-border bg-card'}
+                  hover:border-primary transition-colors
+                  ${highlighted ? 'card-highlighted' : ''}`}
       aria-label={`${pokemon?.name ?? 'Slot'} — ${owned ? 'owned' : 'missing'}`}
     >
       {showSprite ? (
@@ -33,8 +35,8 @@ export function BinderSlot({ pokemonId, owned, onToggle }: BinderSlotProps) {
         <SilhouetteCanvas pokemonId={pokemonId} />
       )}
       <span className="absolute bottom-0 inset-x-0 px-1 py-0.5
-                       text-[10px] font-bold uppercase tracking-wider text-on-surface
-                       bg-surface-container-lowest/70 truncate">
+                       text-[10px] font-bold uppercase tracking-wider text-foreground
+                       bg-background/70 truncate">
         #{pokemonId} {pokemon?.name}
       </span>
     </button>

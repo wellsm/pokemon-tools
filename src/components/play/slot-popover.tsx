@@ -46,15 +46,15 @@ export function SlotPopover({
       />
 
       <div
-        className={`relative z-10 mx-auto bg-surface-container border border-outline-variant rounded-2xl p-5 w-[340px] max-w-[90vw] max-h-[80vh] overflow-y-auto space-y-5 ${side === "a" ? "rotate-180" : ""}`}
+        className={`relative z-10 mx-auto bg-card border border-border rounded-2xl p-5 w-[340px] max-w-[90vw] max-h-[80vh] overflow-y-auto space-y-5 ${side === "a" ? "rotate-180" : ""}`}
       >
         {/* Header */}
         <div className="flex items-center justify-between">
-          <span className="text-on-surface font-bold text-lg">{label}</span>
+          <span className="text-foreground font-bold text-lg">{label}</span>
           <button
             type="button"
             onClick={() => onOpenChange(false)}
-            className="text-on-surface-variant hover:text-on-surface transition-colors"
+            className="text-muted-foreground hover:text-foreground transition-colors"
           >
             <XIcon className="size-5" />
           </button>
@@ -62,7 +62,7 @@ export function SlotPopover({
 
         {/* Damage counter */}
         <div>
-          <p className="text-sm text-on-surface-variant uppercase tracking-wider mb-2">
+          <p className="text-sm text-muted-foreground uppercase tracking-wider mb-2">
             Damage
           </p>
           <div className="flex items-center justify-center gap-2">
@@ -71,12 +71,12 @@ export function SlotPopover({
                 key={amt}
                 type="button"
                 onClick={() => addDamage(side, slot.id, amt)}
-                className="w-14 h-10 rounded-md bg-surface-container-high border border-outline-variant text-base font-medium text-on-surface p-3 hover:opacity-80 transition-colors"
+                className="w-14 h-10 rounded-md bg-muted border border-border text-base font-medium text-foreground p-3 hover:opacity-80 transition-colors"
               >
                 {amt}
               </button>
             ))}
-            <span className="text-3xl font-black text-on-surface w-20 text-center">
+            <span className="text-3xl font-black text-foreground w-20 text-center">
               {slot.damage}
             </span>
             {[10, 20].map((amt) => (
@@ -84,7 +84,7 @@ export function SlotPopover({
                 key={amt}
                 type="button"
                 onClick={() => addDamage(side, slot.id, amt)}
-                className="w-14 h-10 rounded-md bg-surface-container-high border border-outline-variant text-base font-medium text-on-surface p-3 hover:opacity-80 transition-colors"
+                className="w-14 h-10 rounded-md bg-muted border border-border text-base font-medium text-foreground p-3 hover:opacity-80 transition-colors"
               >
                 +{amt}
               </button>
@@ -94,7 +94,7 @@ export function SlotPopover({
 
         {/* Conditions — only for active slot */}
         {slot.position === 'active' && <div>
-          <p className="text-sm text-on-surface-variant uppercase tracking-wider mb-2">
+          <p className="text-sm text-muted-foreground uppercase tracking-wider mb-2">
             Conditions
           </p>
           {/* 3×2 grid: orientations row + markers row */}
@@ -108,8 +108,8 @@ export function SlotPopover({
                   onClick={() => setOrientation(side, slot.id, active ? null : cond)}
                   className={`py-2 rounded-xl text-xs font-medium transition-colors border ${
                     active
-                      ? 'bg-primary-container/20 border-primary-container text-primary-container'
-                      : 'bg-surface-container border border-outline-variant text-on-surface-variant'
+                      ? 'bg-primary/20 border-primary text-primary'
+                      : 'bg-card border border-border text-muted-foreground'
                   }`}
                 >
                   {ORIENTATION_LABELS[cond]}
@@ -127,8 +127,8 @@ export function SlotPopover({
                   onClick={() => toggleMarker(side, slot.id, marker)}
                   className={`py-2 rounded-xl text-xs font-medium transition-colors border ${
                     active
-                      ? 'bg-primary-container/20 border-primary-container text-primary-container'
-                      : 'bg-surface-container border border-outline-variant text-on-surface-variant'
+                      ? 'bg-primary/20 border-primary text-primary'
+                      : 'bg-card border border-border text-muted-foreground'
                   }`}
                 >
                   {MARKER_LABELS[marker]}
@@ -140,7 +140,7 @@ export function SlotPopover({
 
         {/* Attached energies */}
         <div>
-          <p className="text-sm text-on-surface-variant uppercase tracking-wider mb-2">
+          <p className="text-sm text-muted-foreground uppercase tracking-wider mb-2">
             Energies
           </p>
           {slot.energies.length > 0 && (
@@ -158,7 +158,7 @@ export function SlotPopover({
                 key={type}
                 type="button"
                 onClick={() => attachEnergy(side, slot.id, type)}
-                className="w-9 h-9 rounded-xl bg-surface-container-high text-on-surface border border-outline-variant p-1 hover:opacity-80 transition-colors"
+                className="w-9 h-9 rounded-xl bg-muted text-foreground border border-border p-1 hover:opacity-80 transition-colors"
               >
                 <img
                   src={ENERGY_IMAGE[type]}
@@ -176,8 +176,8 @@ export function SlotPopover({
           onClick={() => { toggleAbility(side, slot.id); onOpenChange(false); }}
           className={`w-full py-3 rounded-xl text-sm font-bold transition-colors ${
             slot.abilityUsed
-              ? 'bg-secondary-container text-on-secondary-container'
-              : 'bg-secondary-container text-on-secondary-container hover:opacity-90'
+              ? 'bg-secondary text-secondary-foreground'
+              : 'bg-secondary text-secondary-foreground hover:opacity-90'
           }`}
         >
           {slot.abilityUsed ? 'Deactivate Ability' : 'Use Ability'}
@@ -188,7 +188,7 @@ export function SlotPopover({
           <button
             type="button"
             onClick={() => clearDamage(side, slot.id)}
-            className="flex-1 py-3 rounded-xl bg-surface-container-high text-on-surface text-sm font-medium hover:opacity-80 transition-colors"
+            className="flex-1 py-3 rounded-xl bg-muted text-foreground text-sm font-medium hover:opacity-80 transition-colors"
           >
             Clear Damage
           </button>
@@ -196,7 +196,7 @@ export function SlotPopover({
             <button
               type="button"
               onClick={() => clearEnergies(side, slot.id)}
-              className="flex-1 py-3 rounded-xl bg-surface-container-high text-on-surface text-sm font-medium hover:opacity-80 transition-colors"
+              className="flex-1 py-3 rounded-xl bg-muted text-foreground text-sm font-medium hover:opacity-80 transition-colors"
             >
               Clear energies
             </button>
@@ -205,7 +205,7 @@ export function SlotPopover({
             <button
               type="button"
               onClick={() => clearConditions(side, slot.id)}
-              className="flex-1 py-3 rounded-xl bg-surface-container-high text-on-surface text-sm font-medium hover:opacity-80 transition-colors"
+              className="flex-1 py-3 rounded-xl bg-muted text-foreground text-sm font-medium hover:opacity-80 transition-colors"
             >
               Clear conditions
             </button>

@@ -5,8 +5,10 @@ import { BinderPaginator } from '@/components/binder/binder-paginator'
 import { useBinderStore } from '@/stores/binder-store'
 import { useState } from 'react'
 import { EditFolderDrawer } from '@/components/binder/edit-folder-drawer'
+import { useT } from '@/lib/i18n/store'
 
 export function BinderDetailPage() {
+  const t = useT()
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const binder = useBinderStore((s) => s.binders.find((b) => b.id === id))
@@ -15,14 +17,14 @@ export function BinderDetailPage() {
   if (!binder) {
     return (
       <div className="min-h-screen">
-        <Header back={{ to: '/binder' }} title="Not Found" />
-        <main className="px-4 mt-12 text-center text-on-surface-variant">
-          Binder not found.
+        <Header back={{ to: '/binder' }} title={t.binderDetail.notFoundTitle} />
+        <main className="px-4 mt-12 text-center text-muted-foreground">
+          {t.binderDetail.notFoundBody}
           <button
             onClick={() => navigate('/binder')}
-            className="block mx-auto mt-4 underline text-primary-container"
+            className="block mx-auto mt-4 underline text-primary"
           >
-            Back to binders
+            {t.binderDetail.backToBinders}
           </button>
         </main>
       </div>
@@ -30,17 +32,17 @@ export function BinderDetailPage() {
   }
 
   return (
-    <div className="min-h-screen">
+    <div className="h-screen overflow-hidden flex flex-col">
       <Header
         back={{ to: '/binder' }}
         title={binder.name}
         actions={
           <button
             onClick={() => setEditing(true)}
-            aria-label="Binder settings"
-            className="p-2 rounded-md hover:bg-surface-container"
+            aria-label={t.binderDetail.settingsLabel}
+            className="p-2 rounded-md hover:bg-card"
           >
-            <SettingsIcon strokeWidth={2} className="w-5 h-5 text-on-surface-variant" />
+            <SettingsIcon strokeWidth={2} className="w-5 h-5 text-muted-foreground" />
           </button>
         }
       />

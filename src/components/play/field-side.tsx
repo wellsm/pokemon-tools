@@ -160,8 +160,8 @@ export function FieldSide({
       onClick={onHistory}
       className={`w-10 h-10 rounded-full flex items-center justify-center transition-all ${
         historyActive
-          ? "bg-surface-container-high text-on-surface border border-outline"
-          : "bg-surface-container border border-outline-variant text-on-surface-variant hover:bg-surface-container-high"
+          ? "bg-muted text-foreground border border-border"
+          : "bg-card border border-border text-muted-foreground hover:bg-muted"
       }`}
     >
       <ClockIcon className="size-4" />
@@ -172,7 +172,7 @@ export function FieldSide({
     <button
       type="button"
       onClick={onEndGame}
-      className="w-10 h-10 rounded-full bg-primary-container/20 border border-primary-container/40 flex items-center justify-center text-primary-container text-xs font-bold hover:bg-primary-container/30 active:scale-95 transition-all"
+      className="w-10 h-10 rounded-full bg-primary/20 border border-primary/40 flex items-center justify-center text-primary text-xs font-bold hover:bg-primary/30 active:scale-95 transition-all"
     >
       ✕
     </button>

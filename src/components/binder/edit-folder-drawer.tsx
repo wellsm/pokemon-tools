@@ -7,8 +7,19 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sh
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from '@/components/ui/drawer'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Switch } from '@/components/ui/switch'
 import { Button } from '@/components/ui/button'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog'
+import { cn } from '@/lib/utils'
+import { useT } from '@/lib/i18n/store'
 
 interface Props {
   binder: Binder
@@ -17,15 +28,15 @@ interface Props {
 }
 
 function EditForm({ binder, onClose }: { binder: Binder; onClose: () => void }) {
+  const t = useT()
   const renameBinder = useBinderStore((s) => s.renameBinder)
   const setCover = useBinderStore((s) => s.setCover)
-  const setMain = useBinderStore((s) => s.setMain)
   const deleteBinder = useBinderStore((s) => s.deleteBinder)
 
   const [name, setName] = useState(binder.name)
-  const [isMain, setIsMain] = useState(binder.isMain ?? false)
   const [coverSearch, setCoverSearch] = useState('')
   const [coverPokemonId, setCoverPokemonId] = useState<number | undefined>(binder.coverPokemonId)
+  const [deleteOpen, setDeleteOpen] = useState(false)
 
   const regionPokemon = getPokemonByRegion(binder.region)
   const filteredPokemon = coverSearch.trim()
@@ -40,58 +51,56 @@ function EditForm({ binder, onClose }: { binder: Binder; onClose: () => void }) 
     if (!name.trim()) return
     renameBinder(binder.id, name.trim())
     setCover(binder.id, coverPokemonId)
-    if (isMain && !binder.isMain) setMain(binder.id)
     onClose()
   }
 
-  const handleDelete = () => {
-    if (confirm(`Delete "${binder.name}"? This cannot be undone.`)) {
-      deleteBinder(binder.id)
-      onClose()
-    }
+  const handleDeleteConfirmed = () => {
+    deleteBinder(binder.id)
+    setDeleteOpen(false)
+    onClose()
   }
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-5 px-4 pb-6 pt-2 overflow-y-auto">
       {/* Name */}
       <div className="space-y-1.5">
-        <Label htmlFor="edit-name">Name</Label>
+        <Label htmlFor="edit-name">{t.binderEdit.name}</Label>
         <Input
           id="edit-name"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          placeholder="Binder name"
+          placeholder={t.binderEdit.namePlaceholder}
           required
-          className="bg-surface-container border-outline-variant"
+          className="bg-card border-border"
         />
       </div>
 
       {/* Cover Pokemon */}
       <div className="space-y-1.5">
-        <Label>Cover Pokemon (optional)</Label>
+        <Label>{t.binderEdit.cover.label}</Label>
         {coverPokemonId && (
           <div className="flex items-center gap-3 mb-2">
             <img
               src={getSpriteUrl(coverPokemonId)}
               alt={`#${coverPokemonId}`}
-              className="w-12 h-12 object-contain rounded-xl border border-outline-variant bg-surface-container-high"
+              className="w-12 h-12 object-contain rounded-xl border border-border bg-muted"
             />
             <Button
               type="button"
               variant="ghost"
               size="sm"
-              className="text-on-surface-variant"
+              className="text-muted-foreground"
               onClick={() => { setCoverPokemonId(undefined); setCoverSearch('') }}
             >
-              Remove cover
+              {t.binderEdit.cover.remove}
             </Button>
           </div>
         )}
         <Input
           value={coverSearch}
           onChange={(e) => setCoverSearch(e.target.value)}
-          placeholder="Search by name or #id…"
-          className="bg-surface-container border-outline-variant"
+          placeholder={t.binderEdit.cover.searchPlaceholder}
+          className="bg-card border-border"
         />
         {filteredPokemon.length > 0 && (
           <div className="flex flex-wrap gap-1.5 mt-1">
@@ -102,8 +111,8 @@ function EditForm({ binder, onClose }: { binder: Binder; onClose: () => void }) 
                 onClick={() => { setCoverPokemonId(p.id); setCoverSearch('') }}
                 className={`flex items-center gap-1 px-2 py-1 rounded-xl text-xs border transition-colors
                   ${coverPokemonId === p.id
-                    ? 'bg-primary-container text-on-primary-container border-outline'
-                    : 'bg-surface-container-high text-on-surface-variant border-outline-variant hover:border-outline'
+                    ? 'bg-primary text-primary-foreground border-border'
+                    : 'bg-muted text-muted-foreground border-border hover:border-primary'
                   }`}
               >
                 <img src={getSpriteUrl(p.id, 'sprite')} alt="" className="w-5 h-5 object-contain" />
@@ -114,52 +123,66 @@ function EditForm({ binder, onClose }: { binder: Binder; onClose: () => void }) 
         )}
       </div>
 
-      {/* Set as main */}
-      <div className="flex items-center justify-between">
-        <div>
-          <Label htmlFor="edit-main">Main Deck</Label>
-          <p className="text-xs text-on-surface-variant mt-0.5">Mark as your primary binder</p>
-        </div>
-        <Switch id="edit-main" checked={isMain} onCheckedChange={setIsMain} />
-      </div>
-
-      <Button type="submit" disabled={!name.trim()} className="mt-auto">
-        Save changes
+      <Button type="submit" disabled={!name.trim()} className="mt-auto"
+        size="lg">
+        {t.binderEdit.save}
       </Button>
 
       <Button
         type="button"
         variant="ghost"
-        className="text-primary-container hover:text-on-primary-container hover:bg-primary-container/20"
-        onClick={handleDelete}
+        size="lg"
+        className="text-primary hover:text-primary-foreground hover:bg-primary/20"
+        onClick={() => setDeleteOpen(true)}
       >
-        Delete binder
+        {t.binderEdit.delete}
       </Button>
+
+      <AlertDialog open={deleteOpen} onOpenChange={setDeleteOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{t.binderEdit.deleteConfirm.title(binder.name)}</AlertDialogTitle>
+            <AlertDialogDescription>
+              {t.binderEdit.deleteConfirm.body}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>{t.binderEdit.deleteConfirm.cancel}</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDeleteConfirmed}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              {t.binderEdit.deleteConfirm.confirm}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </form>
   )
 }
 
 export function EditFolderDrawer({ binder, open, onClose }: Props) {
+  const t = useT()
   const isMobile = useIsMobile()
 
-  if (isMobile) {
-    return (
-      <Drawer open={open} onOpenChange={(o) => !o && onClose()}>
-        <DrawerContent className="max-h-[90vh] bg-surface">
-          <DrawerHeader>
-            <DrawerTitle className="text-on-surface">Edit binder</DrawerTitle>
-          </DrawerHeader>
-          <EditForm binder={binder} onClose={onClose} />
-        </DrawerContent>
-      </Drawer>
-    )
-  }
+  // if (isMobile) {
+  //   return (
+  //     <Drawer open={open} onOpenChange={(o) => !o && onClose()}>
+  //       <DrawerContent className="max-h-[90vh] bg-background">
+  //         <DrawerHeader>
+  //           <DrawerTitle className="text-foreground">Edit binder</DrawerTitle>
+  //         </DrawerHeader>
+  //         <EditForm binder={binder} onClose={onClose} />
+  //       </DrawerContent>
+  //     </Drawer>
+  //   )
+  // }
 
   return (
     <Sheet open={open} onOpenChange={(o) => !o && onClose()}>
-      <SheetContent side="right" className="w-80 p-0 flex flex-col bg-surface">
+      <SheetContent side={isMobile ? "bottom" : "right"} className={cn("p-0 flex flex-col bg-background", isMobile ? "max-h-[90vh]" : "h-full")}>
         <SheetHeader className="px-4 pt-5 pb-2">
-          <SheetTitle className="text-on-surface">Edit binder</SheetTitle>
+          <SheetTitle className="text-foreground">{t.binderEdit.title}</SheetTitle>
         </SheetHeader>
         <EditForm binder={binder} onClose={onClose} />
       </SheetContent>

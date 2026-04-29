@@ -6,8 +6,10 @@ import { PlayLandingPage } from '@/pages/play-landing'
 import { PlaySetupPage } from '@/pages/play-setup'
 import { PlayMatchPage } from '@/pages/play-match'
 import { SettingsPage } from '@/pages/settings'
+import { useTheme } from '@/lib/theme'
 
 export default function App() {
+  useTheme()
   return (
     <BrowserRouter>
       <Routes>

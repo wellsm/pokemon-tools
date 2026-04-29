@@ -15,26 +15,26 @@ export function EnergyIndicator({ side }: EnergyIndicatorProps) {
     return (
       <button
         onClick={() => generateEnergy(side)}
-        className="flex items-center gap-2 bg-surface/90 border border-outline-variant rounded-xl px-3 py-2 hover:bg-surface-container/90 transition-colors"
+        className="flex items-center gap-2 bg-background/90 border border-border rounded-xl px-3 py-2 hover:bg-card/90 transition-colors"
       >
         <span className="text-lg">⚡</span>
-        <span className="text-sm text-on-surface-variant">Generate</span>
+        <span className="text-sm text-muted-foreground">Generate</span>
       </button>
     )
   }
 
   return (
-    <div className="flex items-center gap-2 bg-surface/90 border border-outline-variant rounded-xl px-3 py-2">
+    <div className="flex items-center gap-2 bg-background/90 border border-border rounded-xl px-3 py-2">
       <img
         src={ENERGY_IMAGE[energy]}
         alt={ENERGY_LABEL[energy]}
         className="w-8 h-8"
       />
       <div className="text-sm leading-tight">
-        <div className="font-semibold text-on-surface">
+        <div className="font-semibold text-foreground">
           Energy
         </div>
-        <div className="text-on-surface-variant">{ENERGY_LABEL[energy]}</div>
+        <div className="text-muted-foreground">{ENERGY_LABEL[energy]}</div>
       </div>
     </div>
   )

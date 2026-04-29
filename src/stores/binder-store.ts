@@ -3,7 +3,7 @@ import { persist } from 'zustand/middleware'
 import { nanoid } from 'nanoid'
 import type { RegionKey } from '@/lib/pokemon'
 
-export type BinderGrid = '3x3' | '4x3' | '2x2' | '4x4'
+export type BinderGrid = '3x3' | '4x3' | '2x2' | '4x4' | '5x4'
 
 export type Binder = {
   id: string
@@ -11,21 +11,19 @@ export type Binder = {
   region: RegionKey
   grid: BinderGrid
   coverPokemonId?: number
-  isMain?: boolean
   ownedSlots: number[]      // pokemon IDs
   createdAt: number
   updatedAt: number
 }
 
 type CreateInput = Pick<Binder, 'name' | 'region' | 'grid'> &
-  Partial<Pick<Binder, 'coverPokemonId' | 'isMain'>>
+  Partial<Pick<Binder, 'coverPokemonId'>>
 
 interface BinderStore {
   binders: Binder[]
   createBinder: (input: CreateInput) => string
   deleteBinder: (id: string) => void
   renameBinder: (id: string, name: string) => void
-  setMain: (id: string) => void
   toggleSlotOwned: (id: string, pokemonId: number) => void
   setCover: (id: string, pokemonId: number | undefined) => void
 }
@@ -55,13 +53,6 @@ export const useBinderStore = create<BinderStore>()(
       renameBinder: (id, name) =>
         set((s) => ({
           binders: s.binders.map((b) => (b.id === id ? touch({ ...b, name }) : b)),
-        })),
-
-      setMain: (id) =>
-        set((s) => ({
-          binders: s.binders.map((b) =>
-            touch({ ...b, isMain: b.id === id })
-          ),
         })),
 
       toggleSlotOwned: (id, pokemonId) =>

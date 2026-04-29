@@ -1,22 +1,26 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 
+export type ThemePreference = 'light' | 'dark' | 'system'
+
 type SettingsState = {
-  /** placeholder for V1 — add settings here as needed */
   _v: 1
+  themePreference: ThemePreference
+  setThemePreference: (p: ThemePreference) => void
   clearAllData: () => void
 }
 
 export const useSettingsStore = create<SettingsState>()(
   persist(
-    () => ({
+    (set) => ({
       _v: 1,
+      themePreference: 'system',
+      setThemePreference: (p) => set({ themePreference: p }),
       clearAllData: () => {
-        // Clear our v1 keys (other stores' actions will run alongside in pages/settings.tsx)
         localStorage.removeItem('pokemon-tools/binders/v1')
         localStorage.removeItem('pokemon-tools/match/v1')
         localStorage.removeItem('pokemon-tools/settings/v1')
-        // Hard navigate to / for clean in-memory state
+        localStorage.removeItem('pokemon-tools/locale/v1')
         window.location.assign('/')
       },
     }),

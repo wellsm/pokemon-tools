@@ -34,7 +34,7 @@ export function BoardSlot({
 }: BoardSlotProps) {
   const isActive = slot.position === "active";
   const borderColor = variant === "a" ? "border-blue-400" : "border-red-400";
-  const damageColor = slot.damage > 0 ? "text-amber-400" : "text-on-surface-variant";
+  const damageColor = slot.damage > 0 ? "text-amber-400" : "text-muted-foreground";
 
   const orientationClass = slot.orientation
     ? ORIENTATION_ROTATION[slot.orientation]
@@ -71,7 +71,7 @@ export function BoardSlot({
           "relative flex flex-col items-center justify-between rounded-xl transition-all select-none touch-none cursor-grab active:cursor-grabbing w-18 sm:w-24 md:w-32 h-26 sm:h-36 md:h-42 py-1 bg-card",
           isActive
             ? `border-2 ${borderColor}`
-            : "border border-outline-variant",
+            : "border border-border",
           isDragOver ? "ring-2 ring-amber-400 scale-105" : "",
           isDragging ? "opacity-40 scale-95" : "",
           abilityUsed ? "ring-2 ring-cyan-400 shadow-[0_0_12px_rgba(34,211,238,0.4)]" : "",
