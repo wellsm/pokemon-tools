@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useBinderStore } from '@/stores/binder-store'
 import type { Binder } from '@/stores/binder-store'
 import { getPokemonByRegion, getSpriteUrl, REGIONS } from '@/lib/pokemon'
 import { EditFolderDrawer } from './edit-folder-drawer'
@@ -14,7 +13,6 @@ type FolderCardProps = {
 
 export function FolderCard({ binder, onClick, onMenu: _onMenu }: FolderCardProps) {
   const navigate = useNavigate()
-  const _deleteBinder = useBinderStore((s) => s.deleteBinder)
   const [editOpen, setEditOpen] = useState(false)
 
   const total = getPokemonByRegion(binder.region).length
