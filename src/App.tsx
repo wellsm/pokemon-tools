@@ -1,32 +1,29 @@
-// src/App.tsx
-import { BrowserRouter, Routes, Route, useParams, Navigate } from 'react-router-dom'
-import { useBinderStore } from '@/store'
-import { Home } from '@/pages/home'
-import { BinderView } from '@/pages/binder'
-import { Play } from '@/pages/play'
-import { Settings } from '@/pages/settings'
-import { TabBar } from '@/components/app/tab-bar'
-
-function BinderRoute() {
-  const { id } = useParams<{ id: string }>()
-  const folder = useBinderStore((s) => s.folders.find((f) => f.id === id))
-  if (!folder) return <Navigate to="/colecao" replace />
-  return <BinderView folder={folder} />
-}
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { IndexPage } from '@/pages/index'
+import { BinderListPage } from '@/pages/binder-list'
+import { BinderDetailPage } from '@/pages/binder-detail'
+import { PlayLandingPage } from '@/pages/play-landing'
+import { PlaySetupPage } from '@/pages/play-setup'
+import { PlayMatchPage } from '@/pages/play-match'
+import { SettingsPage } from '@/pages/settings'
 
 export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route element={<TabBar />}>
-          <Route path="/colecao" element={<Home />} />
-          <Route path="/colecao/:id" element={<BinderRoute />} />
-          <Route path="/jogar" element={<Play />} />
-          <Route path="/config" element={<Settings />} />
-        </Route>
-        <Route path="/" element={<Navigate to="/colecao" replace />} />
-        <Route path="/binders/:id" element={<Navigate to="/colecao" replace />} />
-        <Route path="*" element={<Navigate to="/colecao" replace />} />
+        <Route path="/"               element={<IndexPage />} />
+        <Route path="/binder"         element={<BinderListPage />} />
+        <Route path="/binder/:id"     element={<BinderDetailPage />} />
+        <Route path="/play"           element={<PlayLandingPage />} />
+        <Route path="/play/new"       element={<PlaySetupPage />} />
+        <Route path="/play/match"     element={<PlayMatchPage />} />
+        <Route path="/settings"       element={<SettingsPage />} />
+        {/* Legacy redirects */}
+        <Route path="/colecao"        element={<Navigate to="/binder" replace />} />
+        <Route path="/colecao/:id"    element={<Navigate to="/binder" replace />} />
+        <Route path="/jogar"          element={<Navigate to="/play" replace />} />
+        <Route path="/config"         element={<Navigate to="/settings" replace />} />
+        <Route path="*"               element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
   )
