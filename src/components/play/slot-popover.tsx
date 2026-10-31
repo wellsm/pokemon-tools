@@ -86,13 +86,25 @@ export function SlotPopover({ slot, side, open, onOpenChange }: SlotPopoverProps
           <span className="text-foreground font-bold text-lg">
             {isActive ? b.active : b.bench}
           </span>
-          <button
-            type="button"
-            onClick={() => onOpenChange(false)}
-            className="text-muted-foreground hover:text-foreground transition-colors"
-          >
-            <XIcon className="size-5" />
-          </button>
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={() => {
+                resetSlot(side, slot.id);
+                onOpenChange(false);
+              }}
+              className="px-3 py-1.5 rounded-lg text-xs font-bold bg-destructive/15 border border-destructive/50 text-destructive hover:bg-destructive/25 transition-colors"
+            >
+              {b.knockOut}
+            </button>
+            <button
+              type="button"
+              onClick={() => onOpenChange(false)}
+              className="text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <XIcon className="size-5" />
+            </button>
+          </div>
         </div>
 
         {/* Damage counter */}
@@ -214,9 +226,6 @@ export function SlotPopover({ slot, side, open, onOpenChange }: SlotPopoverProps
 
         {/* Attached energies */}
         <div>
-          <p className="text-sm text-muted-foreground uppercase tracking-wider mb-2">
-            {b.energies}
-          </p>
           {slot.energies.length > 0 && (
             <div className="mb-3">
               <EnergyBadge
@@ -288,16 +297,6 @@ export function SlotPopover({ slot, side, open, onOpenChange }: SlotPopoverProps
           )}
         </div>
 
-        <button
-          type="button"
-          onClick={() => {
-            resetSlot(side, slot.id);
-            onOpenChange(false);
-          }}
-          className="w-full py-3 rounded-xl text-sm font-bold bg-destructive/15 border border-destructive/50 text-destructive hover:bg-destructive/25 transition-colors"
-        >
-          {b.knockOut}
-        </button>
       </div>
     </div>,
     document.body,
