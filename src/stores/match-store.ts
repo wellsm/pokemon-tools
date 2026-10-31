@@ -5,7 +5,7 @@ import type {
   EnergyType, GameFormat, GameModules, BoardSlot, FieldSide,
   OrientationCondition,
 } from '@/game-data'
-import { FORMAT_DEFAULTS } from '@/game-data'
+import { FORMAT_DEFAULTS, MARKER_DAMAGE, MAX_BENCH } from '@/game-data'
 
 export type Side = 'a' | 'b'
 
@@ -19,6 +19,15 @@ export interface GameAction {
   description: string
   timestamp: number
 }
+
+/** Board state captured before each change so it can be undone. */
+export interface Snapshot {
+  fieldA: FieldSide
+  fieldB: FieldSide
+  history: GameAction[]
+}
+
+export const UNDO_LIMIT = 50
 
 interface MatchState {
   /* identity */
@@ -67,6 +76,17 @@ interface MatchState {
   toggleMarker: (side: Side, slotId: string, marker: 'poisoned' | 'burned') => void
   clearConditions: (side: Side, slotId: string) => void
   toggleAbility: (side: Side, slotId: string) => void
+  toggleTool: (side: Side, slotId: string) => void
+  /** Knock Out: wipes damage, energies, conditions, ability and tool from a slot. */
+  resetSlot: (side: Side, slotId: string) => void
+  /** Clears the "ability used" flag on every slot of one side. */
+  resetAbilities: (side: Side) => void
+  /** Applies the between-turns damage of a poison/burn marker. */
+  applyMarkerDamage: (side: Side, slotId: string, marker: 'poisoned' | 'burned') => void
+
+  /* Undo — board snapshots, newest last (not persisted) */
+  past: Snapshot[]
+  undo: () => void
 
   /* History visibility per side (per spec) */
   historyVisibleA: boolean
@@ -85,7 +105,29 @@ function newSlot(position: 'active' | 'bench'): BoardSlot {
     orientation: null,
     markers: { ...defaultMarkers },
     abilityUsed: false,
+    tool: false,
   }
+}
+
+function snapshot(s: MatchState): Snapshot {
+  return { fieldA: s.fieldA, fieldB: s.fieldB, history: s.history }
+}
+
+/** Partial state that records the current board on the undo stack. */
+function withUndo(s: MatchState): Pick<MatchState, 'past'> {
+  return { past: [...s.past, snapshot(s)].slice(-UNDO_LIMIT) }
+}
+
+function historyEntry(side: Side, type: GameAction['type'], summary: string): GameAction {
+  return { id: nanoid(), side, type, summary, description: summary, timestamp: Date.now() }
+}
+
+function mapSlot(
+  field: FieldSide,
+  slotId: string,
+  fn: (slot: BoardSlot) => BoardSlot,
+): FieldSide {
+  return { slots: field.slots.map((sl) => (sl.id === slotId ? fn(sl) : sl)) }
 }
 
 function createSlots(benchSize: number): BoardSlot[] {
@@ -101,13 +143,6 @@ function getField(state: MatchState, side: Side): FieldSide {
 
 function fieldKey(side: Side): 'fieldA' | 'fieldB' {
   return side === 'a' ? 'fieldA' : 'fieldB'
-}
-
-function updateSlots(
-  field: FieldSide,
-  updater: (slots: BoardSlot[]) => BoardSlot[]
-): FieldSide {
-  return { slots: updater(field.slots) }
 }
 
 const initialModules: GameModules = { coins: true, energy: false, board: true }
@@ -149,6 +184,7 @@ export const useMatchStore = create<MatchState>()(
           energyB: null,
           prize: { a: 6, b: 6 },
           history: [],
+          past: [],
         })
       },
 
@@ -165,6 +201,7 @@ export const useMatchStore = create<MatchState>()(
           energyB: null,
           prize: { a: 6, b: 6 },
           history: [],
+          past: [],
         }),
 
       takePrize: (side) =>
@@ -220,70 +257,74 @@ export const useMatchStore = create<MatchState>()(
 
       addDamage: (side, slotId, amount) =>
         set((s) => ({
-          [fieldKey(side)]: updateSlots(getField(s, side), (slots) =>
-            slots.map((sl) => sl.id === slotId
-              ? { ...sl, damage: Math.max(0, sl.damage + amount) }
-              : sl)
-          ),
+          ...withUndo(s),
+          [fieldKey(side)]: mapSlot(getField(s, side), slotId, (sl) => ({
+            ...sl, damage: Math.max(0, sl.damage + amount),
+          })),
         })),
 
       clearDamage: (side, slotId) =>
         set((s) => ({
-          [fieldKey(side)]: updateSlots(getField(s, side), (slots) =>
-            slots.map((sl) => (sl.id === slotId ? { ...sl, damage: 0 } : sl))
-          ),
+          ...withUndo(s),
+          [fieldKey(side)]: mapSlot(getField(s, side), slotId, (sl) => ({ ...sl, damage: 0 })),
         })),
 
       attachEnergy: (side, slotId, energy) =>
         set((s) => ({
-          [fieldKey(side)]: updateSlots(getField(s, side), (slots) =>
-            slots.map((sl) => sl.id === slotId
-              ? { ...sl, energies: [...sl.energies, energy] }
-              : sl)
-          ),
+          ...withUndo(s),
+          [fieldKey(side)]: mapSlot(getField(s, side), slotId, (sl) => ({
+            ...sl, energies: [...sl.energies, energy],
+          })),
         })),
 
       removeEnergy: (side, slotId, index) =>
         set((s) => ({
-          [fieldKey(side)]: updateSlots(getField(s, side), (slots) =>
-            slots.map((sl) => sl.id === slotId
-              ? { ...sl, energies: sl.energies.filter((_, i) => i !== index) }
-              : sl)
-          ),
+          ...withUndo(s),
+          [fieldKey(side)]: mapSlot(getField(s, side), slotId, (sl) => ({
+            ...sl, energies: sl.energies.filter((_, i) => i !== index),
+          })),
         })),
 
       removeOneEnergy: (side, slotId, energy) =>
-        set((s) => ({
-          [fieldKey(side)]: updateSlots(getField(s, side), (slots) =>
-            slots.map((sl) => {
-              if (sl.id !== slotId) return sl
-              const idx = sl.energies.indexOf(energy)
-              if (idx === -1) return sl
-              return { ...sl, energies: sl.energies.filter((_, i) => i !== idx) }
-            })
-          ),
-        })),
+        set((s) => {
+          const slot = getField(s, side).slots.find((sl) => sl.id === slotId)
+          const idx = slot?.energies.indexOf(energy) ?? -1
+          if (idx === -1) return {}
+          return {
+            ...withUndo(s),
+            [fieldKey(side)]: mapSlot(getField(s, side), slotId, (sl) => ({
+              ...sl, energies: sl.energies.filter((_, i) => i !== idx),
+            })),
+          }
+        }),
 
       clearEnergies: (side, slotId) =>
         set((s) => ({
-          [fieldKey(side)]: updateSlots(getField(s, side), (slots) =>
-            slots.map((sl) => (sl.id === slotId ? { ...sl, energies: [] } : sl))
-          ),
+          ...withUndo(s),
+          [fieldKey(side)]: mapSlot(getField(s, side), slotId, (sl) => ({ ...sl, energies: [] })),
         })),
 
       addSlot: (side) =>
-        set((s) => ({
-          [fieldKey(side)]: updateSlots(getField(s, side), (slots) => [
-            ...slots, newSlot('bench'),
-          ]),
-        })),
+        set((s) => {
+          const field = getField(s, side)
+          const bench = field.slots.filter((sl) => sl.position === 'bench').length
+          if (bench >= MAX_BENCH) return {}
+          return {
+            ...withUndo(s),
+            [fieldKey(side)]: { slots: [...field.slots, newSlot('bench')] },
+          }
+        }),
 
       removeSlot: (side, slotId) =>
-        set((s) => ({
-          [fieldKey(side)]: updateSlots(getField(s, side), (slots) =>
-            slots.filter((sl) => sl.id !== slotId)
-          ),
-        })),
+        set((s) => {
+          const field = getField(s, side)
+          const slot = field.slots.find((sl) => sl.id === slotId)
+          if (!slot || slot.position === 'active') return {}
+          return {
+            ...withUndo(s),
+            [fieldKey(side)]: { slots: field.slots.filter((sl) => sl.id !== slotId) },
+          }
+        }),
 
       swapSlots: (side, fromId, toId) =>
         set((s) => {
@@ -307,49 +348,98 @@ export const useMatchStore = create<MatchState>()(
             ...(fromPos === 'bench' ? clearConds : {}),
           }
           ;[newSlots[fromIdx], newSlots[toIdx]] = [newSlots[toIdx], newSlots[fromIdx]]
-          const summary = `${fromPos} ↔ ${toPos}`
           return {
+            ...withUndo(s),
             [fieldKey(side)]: { slots: newSlots },
-            history: [...s.history, {
-              id: nanoid(), side, type: 'move' as const,
-              summary, description: summary, timestamp: Date.now(),
-            }],
+            history: [...s.history, historyEntry(side, 'move', `${fromPos} ↔ ${toPos}`)],
           }
         }),
 
       setOrientation: (side, slotId, condition) =>
         set((s) => ({
-          [fieldKey(side)]: updateSlots(getField(s, side), (slots) =>
-            slots.map((sl) => sl.id === slotId
-              ? { ...sl, orientation: condition } : sl)
-          ),
+          ...withUndo(s),
+          [fieldKey(side)]: mapSlot(getField(s, side), slotId, (sl) => ({
+            ...sl, orientation: condition,
+          })),
         })),
 
       toggleMarker: (side, slotId, marker) =>
         set((s) => ({
-          [fieldKey(side)]: updateSlots(getField(s, side), (slots) =>
-            slots.map((sl) => sl.id === slotId
-              ? { ...sl, markers: { ...sl.markers, [marker]: !sl.markers[marker] } }
-              : sl)
-          ),
+          ...withUndo(s),
+          [fieldKey(side)]: mapSlot(getField(s, side), slotId, (sl) => ({
+            ...sl, markers: { ...sl.markers, [marker]: !sl.markers[marker] },
+          })),
         })),
 
       clearConditions: (side, slotId) =>
         set((s) => ({
-          [fieldKey(side)]: updateSlots(getField(s, side), (slots) =>
-            slots.map((sl) => sl.id === slotId
-              ? { ...sl, orientation: null, markers: { poisoned: false, burned: false } }
-              : sl)
-          ),
+          ...withUndo(s),
+          [fieldKey(side)]: mapSlot(getField(s, side), slotId, (sl) => ({
+            ...sl, orientation: null, markers: { ...defaultMarkers },
+          })),
         })),
 
       toggleAbility: (side, slotId) =>
         set((s) => ({
-          [fieldKey(side)]: updateSlots(getField(s, side), (slots) =>
-            slots.map((sl) => sl.id === slotId
-              ? { ...sl, abilityUsed: !sl.abilityUsed } : sl)
-          ),
+          ...withUndo(s),
+          [fieldKey(side)]: mapSlot(getField(s, side), slotId, (sl) => ({
+            ...sl, abilityUsed: !sl.abilityUsed,
+          })),
         })),
+
+      toggleTool: (side, slotId) =>
+        set((s) => ({
+          ...withUndo(s),
+          [fieldKey(side)]: mapSlot(getField(s, side), slotId, (sl) => ({
+            ...sl, tool: !sl.tool,
+          })),
+        })),
+
+      resetSlot: (side, slotId) =>
+        set((s) => {
+          const slot = getField(s, side).slots.find((sl) => sl.id === slotId)
+          if (!slot) return {}
+          return {
+            ...withUndo(s),
+            [fieldKey(side)]: mapSlot(getField(s, side), slotId, (sl) => ({
+              ...newSlot(sl.position), id: sl.id,
+            })),
+            history: [...s.history, historyEntry(side, 'slot', `${slot.position} cleared (KO)`)],
+          }
+        }),
+
+      resetAbilities: (side) =>
+        set((s) => {
+          const field = getField(s, side)
+          if (!field.slots.some((sl) => sl.abilityUsed)) return {}
+          return {
+            ...withUndo(s),
+            [fieldKey(side)]: {
+              slots: field.slots.map((sl) => ({ ...sl, abilityUsed: false })),
+            },
+          }
+        }),
+
+      applyMarkerDamage: (side, slotId, marker) =>
+        set((s) => {
+          const amount = MARKER_DAMAGE[marker]
+          return {
+            ...withUndo(s),
+            [fieldKey(side)]: mapSlot(getField(s, side), slotId, (sl) => ({
+              ...sl, damage: sl.damage + amount,
+            })),
+            history: [...s.history, historyEntry(side, 'damage', `+${amount} ${marker}`)],
+          }
+        }),
+
+      past: [],
+
+      undo: () =>
+        set((s) => {
+          const prev = s.past[s.past.length - 1]
+          if (!prev) return {}
+          return { ...prev, past: s.past.slice(0, -1) }
+        }),
 
       toggleHistoryVisible: (side) =>
         set((s) => side === 'a'
@@ -360,8 +450,10 @@ export const useMatchStore = create<MatchState>()(
     {
       name: 'pokemon-tools/match/v1',
       version: 1,
+      // Undo stack lives only in memory.
+      partialize: ({ past: _past, ...rest }) => rest,
       merge: (persisted, current) => {
-        const state = { ...current, ...(persisted as Partial<MatchState>) }
+        const state = { ...current, ...(persisted as Partial<MatchState>), past: [] }
         function migrateSlots(field: FieldSide): FieldSide {
           return {
             slots: field.slots.map((sl) => ({
@@ -369,6 +461,7 @@ export const useMatchStore = create<MatchState>()(
               orientation: sl.orientation ?? null,
               markers: sl.markers ?? { poisoned: false, burned: false },
               abilityUsed: sl.abilityUsed ?? false,
+              tool: sl.tool ?? false,
             })),
           }
         }

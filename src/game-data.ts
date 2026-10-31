@@ -5,7 +5,16 @@ export const ENERGY_TYPES = [
   'psychic', 'fighting', 'darkness', 'metal',
 ] as const
 
-export type EnergyType = (typeof ENERGY_TYPES)[number]
+/** Basic energy types (used by the Pocket energy generator). */
+export type BasicEnergyType = (typeof ENERGY_TYPES)[number]
+
+/**
+ * Energy types that can be attached to a slot. `colorless` covers
+ * Special Energies and anything that isn't a basic type.
+ */
+export const SLOT_ENERGY_TYPES = [...ENERGY_TYPES, 'colorless'] as const
+
+export type EnergyType = (typeof SLOT_ENERGY_TYPES)[number]
 
 export type GameFormat = 'standard' | 'pocket'
 
@@ -32,6 +41,8 @@ export interface BoardSlot {
   orientation: OrientationCondition
   markers: MarkerConditions
   abilityUsed: boolean
+  /** A Pokémon Tool is attached to this Pokémon. */
+  tool: boolean
 }
 
 export const ORIENTATION_LABELS: Record<NonNullable<OrientationCondition>, string> = {
@@ -72,6 +83,7 @@ export const ENERGY_LABEL: Record<EnergyType, string> = {
   fighting: 'Fighting',
   darkness: 'Darkness',
   metal: 'Metal',
+  colorless: 'Colorless',
 }
 
 export const ENERGY_EMOJI: Record<EnergyType, string> = {
@@ -83,6 +95,7 @@ export const ENERGY_EMOJI: Record<EnergyType, string> = {
   fighting: '👊',
   darkness: '🌑',
   metal: '⚙️',
+  colorless: '⭐',
 }
 
 export const ENERGY_COLOR: Record<EnergyType, string> = {
@@ -94,6 +107,7 @@ export const ENERGY_COLOR: Record<EnergyType, string> = {
   fighting: '#f97316',
   darkness: '#6b7280',
   metal: '#94a3b8',
+  colorless: '#d4d4d8',
 }
 
 export const FORMAT_DEFAULTS: Record<GameFormat, {
@@ -112,6 +126,15 @@ export const FORMAT_DEFAULTS: Record<GameFormat, {
 
 export const MAX_ENERGY_TYPES = 3 // Pocket allows max 3 types
 
+/** Hard cap for bench slots (Standard is 5; some Stadiums raise it to 8). */
+export const MAX_BENCH = 8
+
+/** Damage applied between turns by each marker condition. */
+export const MARKER_DAMAGE: Record<keyof MarkerConditions, number> = {
+  poisoned: 10,
+  burned: 20,
+}
+
 export const ENERGY_IMAGE: Record<EnergyType, string> = {
   grass: '/images/grass.png',
   fire: '/images/fire.png',
@@ -121,4 +144,5 @@ export const ENERGY_IMAGE: Record<EnergyType, string> = {
   fighting: '/images/fighting.png',
   darkness: '/images/dark.png',
   metal: '/images/steel.png',
+  colorless: '/images/normal.png',
 }
