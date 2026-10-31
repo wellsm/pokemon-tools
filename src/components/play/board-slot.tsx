@@ -1,4 +1,4 @@
-import { Flame, Skull } from "lucide-react";
+import { Flame, Skull, Wrench } from "lucide-react";
 import { EnergyBadge } from "@/components/play/energy-badge";
 import type { BoardSlot as BoardSlotType } from "@/game-data";
 import { CONDITION_COLORS, ORIENTATION_ROTATION } from "@/game-data";
@@ -94,6 +94,15 @@ export function BoardSlot({
           <EnergyBadge energies={slot.energies} size="sm" />
         )}
       </button>
+
+      {slot.tool && (
+        <div
+          className="absolute -top-2 -left-2 size-5 sm:size-7 rounded-full flex items-center justify-center bg-emerald-500 text-white"
+          title="Tool"
+        >
+          <Wrench className="size-3 sm:size-4" />
+        </div>
+      )}
 
       {/* Condition markers — positioned outside the rotated card */}
       {hasMarkers && (

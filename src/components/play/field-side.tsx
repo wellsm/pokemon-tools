@@ -1,4 +1,4 @@
-import { ClockIcon, MinusIcon, PlusIcon } from "lucide-react";
+import { ClockIcon, MinusIcon, PlusIcon, SparklesIcon, Undo2Icon } from "lucide-react";
 import { useCallback, useRef, useState } from "react";
 import { BoardSlot } from "@/components/play/board-slot";
 import { SlotPopover } from "@/components/play/slot-popover";
@@ -6,8 +6,26 @@ import type {
   BoardSlot as BoardSlotType,
   FieldSide as FieldSideType,
 } from "@/game-data";
-import { ENERGY_LABEL } from "@/game-data";
+import { ENERGY_LABEL, MAX_BENCH } from "@/game-data";
+import { useT } from "@/lib/i18n/store";
 import { type Side, useGameStore } from "@/stores/match-store";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+
+function slotHasState(slot: BoardSlotType): boolean {
+  return slot.damage > 0 || slot.energies.length > 0 || slot.tool;
+}
+
+const roundButton =
+  "w-10 h-10 rounded-full bg-card border border-border text-muted-foreground flex items-center justify-center hover:bg-muted active:scale-95 transition-all disabled:opacity-30 disabled:pointer-events-none";
 
 interface FieldSideProps {
   field: FieldSideType;
@@ -30,6 +48,12 @@ export function FieldSide({
   const removeSlot = useGameStore((s) => s.removeSlot);
   const swapSlots = useGameStore((s) => s.swapSlots);
   const logAction = useGameStore((s) => s.logAction);
+  const undo = useGameStore((s) => s.undo);
+  const canUndo = useGameStore((s) => s.past.length > 0);
+  const resetAbilities = useGameStore((s) => s.resetAbilities);
+  const t = useT();
+  const b = t.play.board;
+  const [confirmRemoveId, setConfirmRemoveId] = useState<string | null>(null);
 
   const [selectedSlotId, setSelectedSlotId] = useState<string | null>(null);
   const slotSnapshot = useRef<BoardSlotType | null>(null);
@@ -112,6 +136,17 @@ export function FieldSide({
   const benchSlots = field.slots.filter((s) => s.position === "bench");
   const selectedSlot = field.slots.find((s) => s.id === selectedSlotId);
   const lastBench = benchSlots[benchSlots.length - 1];
+  const benchFull = benchSlots.length >= MAX_BENCH;
+  const anyAbilityUsed = field.slots.some((s) => s.abilityUsed);
+
+  function handleRemoveLast() {
+    if (!lastBench) return;
+    if (slotHasState(lastBench)) {
+      setConfirmRemoveId(lastBench.id);
+    } else {
+      removeSlot(side, lastBench.id);
+    }
+  }
 
   function renderSlot(slot: (typeof field.slots)[number]) {
     return (
@@ -168,6 +203,32 @@ export function FieldSide({
     </button>
   );
 
+  const undoButton = (
+    <button
+      type="button"
+      onClick={undo}
+      disabled={!canUndo}
+      aria-label={b.undo}
+      title={b.undo}
+      className={roundButton}
+    >
+      <Undo2Icon className="size-4" />
+    </button>
+  );
+
+  const resetAbilitiesButton = (
+    <button
+      type="button"
+      onClick={() => resetAbilities(side)}
+      disabled={!anyAbilityUsed}
+      aria-label={b.resetAbilities}
+      title={b.resetAbilities}
+      className={`${roundButton} ${anyAbilityUsed ? "text-cyan-500 border-cyan-400" : ""}`}
+    >
+      <SparklesIcon className="size-4" />
+    </button>
+  );
+
   const endButton = onEndGame && (
     <button
       type="button"
@@ -187,13 +248,13 @@ export function FieldSide({
         {/* Active + coin button + end button */}
         <div className="relative">
           {activeSlot && renderSlot(activeSlot)}
-          {coinButton && (
-            <div className="absolute top-1/2 -translate-y-1/2 -right-16">
-              {coinButton}
-            </div>
-          )}
+          <div className="absolute top-1/2 -translate-y-1/2 -right-14 flex flex-col gap-1.5 items-center">
+            {coinButton}
+            {resetAbilitiesButton}
+          </div>
           <div className="absolute top-1/2 -translate-y-1/2 -left-14 flex flex-col gap-1.5">
             {historyButton}
+            {undoButton}
             {endButton}
           </div>
         </div>
@@ -204,17 +265,18 @@ export function FieldSide({
             <button
               type="button"
               onClick={() => addSlot(side)}
-              className="text-green-400 bg-green-400/10 rounded-md px-2 sm:px-4 py-1 sm:py-2 text-sm sm:text-base hover:bg-green-400/20 transition-colors"
+              disabled={benchFull}
+              className="text-green-400 bg-green-400/10 rounded-md px-2 sm:px-4 py-1 sm:py-2 text-sm sm:text-base hover:bg-green-400/20 transition-colors disabled:opacity-30 disabled:pointer-events-none"
             >
-              <PlusIcon className="size-3.5 inline" /> Slot
+              <PlusIcon className="size-3.5 inline" /> {b.slot}
             </button>
             {lastBench && (
               <button
                 type="button"
-                onClick={() => removeSlot(side, lastBench.id)}
+                onClick={handleRemoveLast}
                 className="text-red-400 bg-red-400/10 rounded-md px-2 sm:px-4 py-1 sm:py-2 text-sm sm:text-base hover:bg-red-400/20 transition-colors"
               >
-                <MinusIcon className="size-3.5 inline" /> Slot
+                <MinusIcon className="size-3.5 inline" /> {b.slot}
               </button>
             )}
           </div>
@@ -228,7 +290,6 @@ export function FieldSide({
         <SlotPopover
           slot={selectedSlot}
           side={side}
-          label={selectedSlot.position === "active" ? "Active" : "Bench"}
           open={!!selectedSlotId}
           onOpenChange={(open) => {
             if (!open) {
@@ -238,11 +299,7 @@ export function FieldSide({
               if (snap && current) {
                 const damageDiff = current.damage - snap.damage;
                 if (damageDiff !== 0) {
-                  logAction(
-                    side,
-                    "damage",
-                    `${damageDiff > 0 ? "+" : ""}${damageDiff} dano → ${current.damage}`,
-                  );
+                  logAction(side, "damage", b.log.damage(damageDiff, current.damage));
                 }
                 const addedEnergies =
                   current.energies.length - snap.energies.length;
@@ -250,11 +307,7 @@ export function FieldSide({
                   const energyNames = current.energies
                     .map((e) => ENERGY_LABEL[e])
                     .join(", ");
-                  logAction(
-                    side,
-                    "energy",
-                    `${addedEnergies > 0 ? "+" : ""}${addedEnergies} energia (${energyNames || "nenhuma"})`,
-                  );
+                  logAction(side, "energy", b.log.energy(addedEnergies, energyNames));
                 }
               }
               slotSnapshot.current = null;
@@ -264,6 +317,29 @@ export function FieldSide({
         />
       )}
 
+      <AlertDialog
+        open={!!confirmRemoveId}
+        onOpenChange={(open) => !open && setConfirmRemoveId(null)}
+      >
+        <AlertDialogContent className={side === "a" ? "rotate-180" : ""}>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{b.removeConfirm.title}</AlertDialogTitle>
+            <AlertDialogDescription>{b.removeConfirm.body}</AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>{b.removeConfirm.cancel}</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                if (confirmRemoveId) removeSlot(side, confirmRemoveId);
+                setConfirmRemoveId(null);
+              }}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              {b.removeConfirm.confirm}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
