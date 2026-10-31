@@ -32,7 +32,7 @@ const toggleButton = (active: boolean) =>
       : "bg-card border-border text-muted-foreground"
   }`;
 const secondaryButton =
-  "flex-1 py-3 rounded-xl bg-muted text-foreground text-sm font-medium hover:opacity-80 transition-colors";
+  "flex-1 py-2 sm:py-3 rounded-xl bg-muted text-foreground text-xs sm:text-sm font-medium whitespace-nowrap hover:opacity-80 transition-colors";
 
 export function SlotPopover({ slot, side, open, onOpenChange }: SlotPopoverProps) {
   const t = useT();
@@ -69,7 +69,7 @@ export function SlotPopover({ slot, side, open, onOpenChange }: SlotPopoverProps
 
   return createPortal(
     <div
-      className={`fixed inset-0 z-50 flex flex-col ${side === "a" ? "justify-start pt-14" : "justify-end pb-14"}`}
+      className={`fixed inset-0 z-50 flex flex-col ${side === "a" ? "sm:justify-start sm:pt-14" : "sm:justify-end sm:pb-14"}`}
     >
       <button
         type="button"
@@ -79,7 +79,7 @@ export function SlotPopover({ slot, side, open, onOpenChange }: SlotPopoverProps
       />
 
       <div
-        className={`relative z-10 mx-auto bg-card border border-border rounded-2xl p-5 w-[340px] max-w-[90vw] max-h-[80vh] overflow-y-auto space-y-5 ${side === "a" ? "rotate-180" : ""}`}
+        className={`relative z-10 bg-card overflow-y-auto space-y-4 sm:space-y-5 p-5 w-full h-full sm:mx-auto sm:h-auto sm:w-[340px] sm:max-w-[90vw] sm:max-h-[80vh] sm:border sm:border-border sm:rounded-2xl ${side === "a" ? "rotate-180" : ""}`}
       >
         {/* Header */}
         <div className="flex items-center justify-between">
